@@ -7,6 +7,7 @@ import {
     NotFoundError
 } from "../helpers/error.js";
 import { respondWithError } from "../helpers/json.js";
+import { config } from "../config.js";
 
 export function middlewareLogResponse(req: Request, res: Response, next: NextFunction) {
     res.on("finish", () => {
@@ -14,6 +15,11 @@ export function middlewareLogResponse(req: Request, res: Response, next: NextFun
             console.log(`[NON-OK] ${req.method} ${req.url} - Status: ${res.statusCode}`)
         }
     });
+    next();
+}
+
+export function middlewareIncrementServerHits(_: Request, __: Response, next: NextFunction) {
+    config.apiConfig.fileServerHits++;
     next();
 }
 
