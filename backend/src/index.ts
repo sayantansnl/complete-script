@@ -12,8 +12,8 @@ const PORT = 8080;
 
 app.use(middlewareLogResponse);
 
-app.get("/metrics", middlewareIncrementServerHits, handlerMetrics);
-app.get("/reset", handlerReset);
+app.get("/api/metrics", middlewareIncrementServerHits, handlerMetrics);
+app.get("/api/reset", handlerReset);
 
 app.use(middlewareHandleErrors);
 
