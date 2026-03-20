@@ -3,7 +3,7 @@ import {
     BadRequestError,
     UnauthorizedError,
     UserNotAuthenticatedError,
-    ForbiddenError,
+    UserForbiddenError,
     NotFoundError
 } from "../helpers/error.js";
 import { respondWithError } from "../helpers/json.js";
@@ -28,7 +28,7 @@ export function middlewareHandleErrors(err: Error, _: Request, res: Response, __
         respondWithError(res, 400, err.message);
     } else if (err instanceof UnauthorizedError || err instanceof UserNotAuthenticatedError) {
         respondWithError(res, 401, err.message);
-    } else if (err instanceof ForbiddenError) {
+    } else if (err instanceof UserForbiddenError) {
         respondWithError(res, 403, err.message);
     } else if (err instanceof NotFoundError) {
         respondWithError(res, 404, err.message);

@@ -5,7 +5,9 @@ const migrationConfig = {
 loadEnvFile();
 export const config = {
     apiConfig: {
-        fileServerHits: 0
+        fileServerHits: 0,
+        platform: envOrThrow("PLATFORM"),
+        port: envOrThrow("PORT")
     },
     dbConfig: {
         dbUrl: envOrThrow("DB_URL"),

@@ -8,7 +8,7 @@ export class UnauthorizedError extends Error {
         super(message);
     }
 }
-export class ForbiddenError extends Error {
+export class UserForbiddenError extends Error {
     constructor(message) {
         super(message);
     }

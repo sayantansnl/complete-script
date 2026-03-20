@@ -1,4 +1,4 @@
-import { BadRequestError, UnauthorizedError, UserNotAuthenticatedError, ForbiddenError, NotFoundError } from "../helpers/error.js";
+import { BadRequestError, UnauthorizedError, UserNotAuthenticatedError, UserForbiddenError, NotFoundError } from "../helpers/error.js";
 import { respondWithError } from "../helpers/json.js";
 import { config } from "../config.js";
 export function middlewareLogResponse(req, res, next) {
@@ -20,7 +20,7 @@ export function middlewareHandleErrors(err, _, res, __) {
     else if (err instanceof UnauthorizedError || err instanceof UserNotAuthenticatedError) {
         respondWithError(res, 401, err.message);
     }
-    else if (err instanceof ForbiddenError) {
+    else if (err instanceof UserForbiddenError) {
         respondWithError(res, 403, err.message);
     }
     else if (err instanceof NotFoundError) {

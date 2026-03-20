@@ -16,8 +16,6 @@ await migrate(drizzle(migrationClient), config.dbConfig.migration);
 
 const app = express();
 
-const PORT = 8080;
-
 app.use(express.json());
 app.use(middlewareLogResponse);
 
@@ -30,6 +28,6 @@ app.post("/api/users", (req, res, next) => {
 
 app.use(middlewareHandleErrors);
 
-app.listen(PORT, () => {
-    console.log(`Server listening on port:${8080}`);
+app.listen(config.apiConfig.port, () => {
+    console.log(`Server listening on port:${config.apiConfig.port}`);
 });
