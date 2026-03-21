@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import type { NewUser, NewRefreshToken } from "../db/schema.js";
 import { getUserByEmail } from "../db/queries/users.js";
-import { saveRefreshToken } from "../db/queries/refreshTokens.js";
-import { verifyHash, makeJWT, makeRefreshToken } from "../auth.js";
+import { saveRefreshToken, getUserFromRefreshToken } from "../db/queries/refreshTokens.js";
+import { verifyHash, makeJWT, makeRefreshToken, getBearerToken } from "../auth.js";
 import { UserNotAuthenticatedError } from "../helpers/error.js";
 import { respondWithJSON } from "../helpers/json.js";
 import { config } from "../config.js";
@@ -47,4 +47,22 @@ export async function handlerLogin(req: Request, res: Response) {
         token: accessToken,
         refreshToken: rT
     } satisfies LoginResponse);
+}
+
+export async function handlerRefresh(req: Request, res: Response) {
+    const token = getBearerToken(req);
+    const result = await getUserFromRefreshToken(token);
+    if (!result) {
+        throw new UserNotAuthenticatedError("invalid refresh token");
+    }
+    const user = result.user;
+
+    type response = {
+        token: string;
+    };
+
+    const accessToken = makeJWT(user.id, config.jwtConfig.defaultDuration, config.jwtConfig.secret);
+    respondWithJSON(res, 200, {
+        token: accessToken
+    } satisfies response);
 }
