@@ -10,6 +10,7 @@ loadEnvFile();
 type Config = {
     apiConfig: APIConfig;
     dbConfig: DBConfig;
+    jwtConfig: JWTConfig;
 };
 
 type APIConfig = {
@@ -23,6 +24,12 @@ type DBConfig = {
     migration: MigrationConfig;
 };
 
+type JWTConfig = {
+    secret: string;
+    defaultDuration: number;
+    refreshDuration: number;
+};
+
 export const config: Config = {
     apiConfig: {
         fileServerHits: 0,
@@ -32,7 +39,12 @@ export const config: Config = {
     dbConfig: {
         dbUrl: envOrThrow("DB_URL"),
         migration: migrationConfig
-    }
+    },
+    jwtConfig: {
+        secret: envOrThrow("SECRET"),
+        defaultDuration: 60 * 60,
+        refreshDuration: 60 * 60 * 24 * 60 * 1000
+    },
 };
 
 export function envOrThrow(key: string): string {

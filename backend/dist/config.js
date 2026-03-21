@@ -12,7 +12,12 @@ export const config = {
     dbConfig: {
         dbUrl: envOrThrow("DB_URL"),
         migration: migrationConfig
-    }
+    },
+    jwtConfig: {
+        secret: envOrThrow("SECRET"),
+        defaultDuration: 60 * 60,
+        refreshDuration: 60 * 60 * 24 * 60 * 1000
+    },
 };
 export function envOrThrow(key) {
     if (!env[key]) {
