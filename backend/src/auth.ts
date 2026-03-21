@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import type { JwtPayload } from "jsonwebtoken";
 import { BadRequestError, UserNotAuthenticatedError } from "./helpers/error.js";
 import { Request } from "express";
+import { randomBytes} from "node:crypto";
 
 type payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
 const TOKEN_ISSUER = "complete_script";
@@ -72,4 +73,8 @@ export function extractToken(bearerToken: string): string {
         throw new BadRequestError("malformed token");
     }
     return split[1].trim();
+}
+
+export function makeRefreshToken() {
+    return randomBytes(256).toString("hex");
 }
