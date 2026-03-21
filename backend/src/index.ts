@@ -9,7 +9,7 @@ import {
 } from "./api/middleware.js";
 import { handlerMetrics, handlerReset } from "./api/metrics.js";
 import { handlerCreateUser } from "./api/users.js";
-import { handlerLogin, handlerRefresh } from "./api/auth.js";
+import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
 import { config } from "./config.js";
 
 const migrationClient = postgres(config.dbConfig.dbUrl, { max: 1 });
@@ -33,6 +33,10 @@ app.post("/api/login", (req, res, next) => {
 
 app.post("/api/refresh", (req, res, next) => {
     Promise.resolve(handlerRefresh(req, res)).catch(next);
+});
+
+app.post("/api/revoke", (req, res, next) => {
+    Promise.resolve(handlerRevoke(req, res)).catch(next);
 });
 
 app.use(middlewareHandleErrors);
