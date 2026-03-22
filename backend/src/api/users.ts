@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { BadRequestError, UserNotAuthenticatedError } from "../helpers/error.js";
 import { hashPassword, getBearerToken, validateJWT } from "../auth.js";
 import { createUser, updateUser } from "../db/queries/users.js";
-import { getUserFromRefreshToken } from "../db/queries/refreshTokens.js";
 import { NewUser } from "../db/schema.js";
 import { respondWithJSON } from "../helpers/json.js";
 import { config } from "../config.js";
