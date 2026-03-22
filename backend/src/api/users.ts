@@ -48,28 +48,13 @@ export async function handlerUpdateUsers(req: Request, res: Response) {
     };
 
     const params: reqParams = req.body;
-    console.log(`1: Received Request Body: ${params}`);
     if (!params.username || !params.email || !params.password) {
         throw new BadRequestError("missing parameters");
     }
     const token = getBearerToken(req);
-    if (!token) {
-        throw new UserNotAuthenticatedError("Malformed token");
-    }
-    console.log(`Token Present?: ${token ? "yes" : "no"}`);
-    const result = await getUserFromRefreshToken(token);
-    if (!result) {
-        throw new Error("unable to find user subject");
-    }
-    const user = result.user;
-    console.log(`User: ${user}`);
     const userID = validateJWT(token, config.jwtConfig.secret);
-    if (user.id !== userID) {
-        throw new UserNotAuthenticatedError("unauthorized action");
-    }
-    console.log("UserId validated");
     const passwordHash = await hashPassword(params.password);
-    console.log(`PasswordHashed?: ${passwordHash ? "yes": "no"}`);
+
     const updatedUser = await updateUser(params.username, params.email, passwordHash, userID);
     if (!updatedUser) {
         throw new Error("unable to update user");
