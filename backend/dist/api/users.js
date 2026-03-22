@@ -1,7 +1,9 @@
-import { BadRequestError } from "../helpers/error.js";
-import { hashPassword } from "../auth.js";
-import { createUser } from "../db/queries/users.js";
+import { BadRequestError, UserNotAuthenticatedError } from "../helpers/error.js";
+import { hashPassword, getBearerToken, validateJWT } from "../auth.js";
+import { createUser, updateUser } from "../db/queries/users.js";
+import { getUserFromRefreshToken } from "../db/queries/refreshTokens.js";
 import { respondWithJSON } from "../helpers/json.js";
+import { config } from "../config.js";
 export async function handlerCreateUser(req, res) {
     const params = req.body;
     if (!params.email || !params.username || !params.password) {
@@ -21,4 +23,40 @@ export async function handlerCreateUser(req, res) {
         username: user.username
     };
     respondWithJSON(res, 201, newUserPreview);
+}
+export async function handlerUpdateUsers(req, res) {
+    const params = req.body;
+    console.log(`1: Received Request Body: ${params}`);
+    if (!params.username || !params.email || !params.password) {
+        throw new BadRequestError("missing parameters");
+    }
+    const token = getBearerToken(req);
+    if (!token) {
+        throw new UserNotAuthenticatedError("Malformed token");
+    }
+    console.log(`Token Present?: ${token ? "yes" : "no"}`);
+    const result = await getUserFromRefreshToken(token);
+    if (!result) {
+        throw new Error("unable to find user subject");
+    }
+    const user = result.user;
+    console.log(`User: ${user}`);
+    const userID = validateJWT(token, config.jwtConfig.secret);
+    if (user.id !== userID) {
+        throw new UserNotAuthenticatedError("unauthorized action");
+    }
+    console.log("UserId validated");
+    const passwordHash = await hashPassword(params.password);
+    console.log(`PasswordHashed?: ${passwordHash ? "yes" : "no"}`);
+    const updatedUser = await updateUser(params.username, params.email, passwordHash, userID);
+    if (!updatedUser) {
+        throw new Error("unable to update user");
+    }
+    respondWithJSON(res, 200, {
+        id: updatedUser.id,
+        createdAt: updatedUser.createdAt,
+        updatedAt: updatedUser.updatedAt,
+        username: updatedUser.username,
+        email: updatedUser.email
+    });
 }

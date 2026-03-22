@@ -8,7 +8,7 @@ import {
     middlewareIncrementServerHits 
 } from "./api/middleware.js";
 import { handlerMetrics, handlerReset } from "./api/metrics.js";
-import { handlerCreateUser } from "./api/users.js";
+import { handlerCreateUser, handlerUpdateUsers } from "./api/users.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
 import { config } from "./config.js";
 
@@ -25,6 +25,10 @@ app.post("/admin/reset", handlerReset);
 
 app.post("/api/users", (req, res, next) => {
     Promise.resolve(handlerCreateUser(req, res)).catch(next);
+});
+
+app.put("/api/users", (req, res, next) => {
+    Promise.resolve(handlerUpdateUsers(req, res)).catch(next);
 });
 
 app.post("/api/login", (req, res, next) => {

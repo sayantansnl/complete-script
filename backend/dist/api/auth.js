@@ -1,5 +1,5 @@
 import { getUserByEmail } from "../db/queries/users.js";
-import { saveRefreshToken, getUserFromRefreshToken } from "../db/queries/refreshTokens.js";
+import { saveRefreshToken, getUserFromRefreshToken, revokeRefreshToken } from "../db/queries/refreshTokens.js";
 import { verifyHash, makeJWT, makeRefreshToken, getBearerToken } from "../auth.js";
 import { UserNotAuthenticatedError } from "../helpers/error.js";
 import { respondWithJSON } from "../helpers/json.js";
@@ -30,8 +30,8 @@ export async function handlerLogin(req, res) {
     });
 }
 export async function handlerRefresh(req, res) {
-    const token = getBearerToken(req);
-    const result = await getUserFromRefreshToken(token);
+    const refreshToken = getBearerToken(req);
+    const result = await getUserFromRefreshToken(refreshToken);
     if (!result) {
         throw new UserNotAuthenticatedError("invalid refresh token");
     }
@@ -40,4 +40,9 @@ export async function handlerRefresh(req, res) {
     respondWithJSON(res, 200, {
         token: accessToken
     });
+}
+export async function handlerRevoke(req, res) {
+    const refreshToken = getBearerToken(req);
+    await revokeRefreshToken(refreshToken);
+    res.status(204).send();
 }
