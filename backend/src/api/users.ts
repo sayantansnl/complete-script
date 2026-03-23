@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { BadRequestError, UserNotAuthenticatedError } from "../helpers/error.js";
+import { BadRequestError } from "../helpers/error.js";
 import { hashPassword, getBearerToken, validateJWT } from "../auth.js";
 import { createUser, updateUser } from "../db/queries/users.js";
 import { NewUser } from "../db/schema.js";

@@ -15,6 +15,13 @@
       "when": 1774054014992,
       "tag": "0001_illegal_mulholland_black",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774229896247,
+      "tag": "0002_hard_tenebrous",
+      "breakpoints": true
     }
   ]
 }
