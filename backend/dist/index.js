@@ -7,7 +7,7 @@ import { handlerMetrics, handlerReset } from "./api/metrics.js";
 import { handlerCreateUser, handlerUpdateUsers } from "./api/users.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
 import { config } from "./config.js";
-import { handlerCreateProject } from "./api/projects.js";
+import { handlerCreateProject, handlerDeleteProject } from "./api/projects.js";
 const migrationClient = postgres(config.dbConfig.dbUrl, { max: 1 });
 await migrate(drizzle(migrationClient), config.dbConfig.migration);
 const app = express();
@@ -32,6 +32,9 @@ app.post("/api/revoke", (req, res, next) => {
 });
 app.post("/api/projects", (req, res, next) => {
     Promise.resolve(handlerCreateProject(req, res)).catch(next);
+});
+app.delete("/api/projects/:projectId", (req, res, next) => {
+    Promise.resolve(handlerDeleteProject(req, res)).catch(next);
 });
 app.use(middlewareHandleErrors);
 app.listen(config.apiConfig.port, () => {
