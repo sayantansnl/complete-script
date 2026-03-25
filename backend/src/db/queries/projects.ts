@@ -24,3 +24,57 @@ export async function getAllProjectsByUserId(userId: string) {
     }
     return result;
 }
+
+export async function updateProject(
+    userID: string,
+    fountainText?: string,
+    outlineText?: string,
+    titlePageTitle?: string,
+    titlePageAuthor?: string,
+    titlePageBasedOn?: string,
+    titlePageContact?: string,
+    titlePageDraft?: string,
+    pageSize?: string,
+    fontPreferenceFamily?: string,
+    fontPreferenceSize?: number,
+    fontPreferenceLineSpacing?: number
+) {
+    const defaultfontFamily = "Courier Prime";
+    const defaultfontSize = 12;
+    const defaultlineSpacing = 1;
+
+    if (!fontPreferenceFamily) {
+        fontPreferenceFamily = defaultfontFamily;
+    }
+
+    if (!fontPreferenceSize) {
+        fontPreferenceSize = defaultfontSize;
+    }
+
+    if (!fontPreferenceLineSpacing) {
+        fontPreferenceLineSpacing = defaultlineSpacing;
+    }
+
+    const [result] = await db
+        .update(projects)
+        .set({
+            fountainText: fountainText,
+            outlineText: outlineText,
+            titlePageData: {
+                title: titlePageTitle,
+                author: titlePageAuthor,
+                basedOn: titlePageBasedOn,
+                contact: titlePageContact,
+                draft: titlePageDraft,
+            },
+            pageSize: pageSize,
+            fontPreference: {
+                family: fontPreferenceFamily,
+                size: fontPreferenceSize,
+                lineSpacing: fontPreferenceLineSpacing
+            }
+        })
+        .where(eq(projects.userId, userID))
+        .returning();
+    return result;
+}

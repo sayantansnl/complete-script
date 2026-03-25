@@ -67,6 +67,14 @@ export async function handlerGetProject(req: Request, res: Response) {
     respondWithJSON(res, 200, project);
 }
 
+// export async function handlerUpdateProject(req: Request, res: Response) {
+//     const { projectId } = req.params;
+//     if (typeof projectId !== "string") {
+//         throw new BadRequestError("invalid project id");
+//     }
+    
+// }
+
 export async function handlerGetAllProjects(req: Request, res: Response) {
     const token = getBearerToken(req);
     const userID = validateJWT(token, config.jwtConfig.secret);
