@@ -42,3 +42,22 @@ export async function handlerDeleteProject(req: Request, res: Response) {
     await deleteProject(projectId);
     respondWithJSON(res, 204, null);
 }
+
+export async function handlerGetProject(req: Request, res: Response) {
+    const { projectId } = req.params;
+    if (typeof projectId !== "string") {
+        throw new BadRequestError("invalid project id");
+    }
+    const token = getBearerToken(req);
+    const userID = validateJWT(token, config.jwtConfig.secret);
+
+    const project = await getProjectById(projectId);
+    if (!project) {
+        throw new NotFoundError("project not found");
+    }
+
+    if (project.userId !== userID) {
+        throw new UserForbiddenError("you're not allowed to view this project");
+    }
+    respondWithJSON(res, 200, project);
+}
