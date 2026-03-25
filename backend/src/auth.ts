@@ -4,9 +4,9 @@ import type { JwtPayload } from "jsonwebtoken";
 import { BadRequestError, UserNotAuthenticatedError } from "./helpers/error.js";
 import { Request } from "express";
 import { randomBytes} from "node:crypto";
+import { config } from "./config.js"
 
 type payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
-const TOKEN_ISSUER = "complete_script";
 
 export async function hashPassword(password: string): Promise<string> {
     try {
@@ -32,7 +32,7 @@ export function makeJWT(userID: string, expiresIn: number, secret: string): stri
     const issuedAt = Math.floor(Date.now() / 1000);
     const expiresAt = issuedAt + expiresIn;
     const token = jwt.sign({
-        iss: TOKEN_ISSUER,
+        iss: config.jwtConfig.issuer,
         sub: userID,
         iat: issuedAt,
         exp: expiresAt
@@ -48,7 +48,7 @@ export function validateJWT(tokenString: string, secret: string) {
         throw new UserNotAuthenticatedError("Invalid token");
     }
 
-    if (decoded.iss !== TOKEN_ISSUER) {
+    if (decoded.iss !== config.jwtConfig.issuer) {
         throw new UserNotAuthenticatedError("Invalid issuer");
     }
 

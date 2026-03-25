@@ -2,7 +2,7 @@ import * as argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import { BadRequestError, UserNotAuthenticatedError } from "./helpers/error.js";
 import { randomBytes } from "node:crypto";
-const TOKEN_ISSUER = "complete_script";
+import { config } from "./config.js";
 export async function hashPassword(password) {
     try {
         const hash = await argon2.hash(password);
@@ -27,7 +27,7 @@ export function makeJWT(userID, expiresIn, secret) {
     const issuedAt = Math.floor(Date.now() / 1000);
     const expiresAt = issuedAt + expiresIn;
     const token = jwt.sign({
-        iss: TOKEN_ISSUER,
+        iss: config.jwtConfig.issuer,
         sub: userID,
         iat: issuedAt,
         exp: expiresAt
@@ -42,7 +42,7 @@ export function validateJWT(tokenString, secret) {
     catch (e) {
         throw new UserNotAuthenticatedError("Invalid token");
     }
-    if (decoded.iss !== TOKEN_ISSUER) {
+    if (decoded.iss !== config.jwtConfig.issuer) {
         throw new UserNotAuthenticatedError("Invalid issuer");
     }
     if (!decoded.sub) {
