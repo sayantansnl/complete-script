@@ -1,7 +1,12 @@
 import { Request, Response } from "express";
 import { getBearerToken, validateJWT } from "../auth.js";
 import { config } from "../config.js";
-import { createNewProject, getProjectById, deleteProject } from "../db/queries/projects.js";
+import { 
+    createNewProject, 
+    getProjectById, 
+    deleteProject, 
+    getAllProjectsByUserId 
+} from "../db/queries/projects.js";
 import { respondWithJSON } from "../helpers/json.js";
 import { BadRequestError, NotFoundError, UserForbiddenError } from "../helpers/error.js";
 
@@ -60,4 +65,12 @@ export async function handlerGetProject(req: Request, res: Response) {
         throw new UserForbiddenError("you're not allowed to view this project");
     }
     respondWithJSON(res, 200, project);
+}
+
+export async function handlerGetAllProjects(req: Request, res: Response) {
+    const token = getBearerToken(req);
+    const userID = validateJWT(token, config.jwtConfig.secret);
+    
+    const projects = await getAllProjectsByUserId(userID);
+    respondWithJSON(res, 200, projects);
 }

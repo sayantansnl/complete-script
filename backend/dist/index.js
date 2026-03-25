@@ -7,7 +7,7 @@ import { handlerMetrics, handlerReset } from "./api/metrics.js";
 import { handlerCreateUser, handlerUpdateUsers } from "./api/users.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
 import { config } from "./config.js";
-import { handlerCreateProject, handlerDeleteProject, handlerGetProject } from "./api/projects.js";
+import { handlerCreateProject, handlerDeleteProject, handlerGetAllProjects, handlerGetProject } from "./api/projects.js";
 const migrationClient = postgres(config.dbConfig.dbUrl, { max: 1 });
 await migrate(drizzle(migrationClient), config.dbConfig.migration);
 const app = express();
@@ -29,6 +29,9 @@ app.post("/api/refresh", (req, res, next) => {
 });
 app.post("/api/revoke", (req, res, next) => {
     Promise.resolve(handlerRevoke(req, res)).catch(next);
+});
+app.get("/api/projects", (req, res, next) => {
+    Promise.resolve(handlerGetAllProjects(req, res)).catch(next);
 });
 app.post("/api/projects", (req, res, next) => {
     Promise.resolve(handlerCreateProject(req, res)).catch(next);

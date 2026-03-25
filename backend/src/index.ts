@@ -14,6 +14,7 @@ import { config } from "./config.js";
 import { 
     handlerCreateProject, 
     handlerDeleteProject, 
+    handlerGetAllProjects, 
     handlerGetProject 
 } from "./api/projects.js";
 
@@ -46,6 +47,10 @@ app.post("/api/refresh", (req, res, next) => {
 
 app.post("/api/revoke", (req, res, next) => {
     Promise.resolve(handlerRevoke(req, res)).catch(next);
+});
+
+app.get("/api/projects", (req, res, next) => {
+    Promise.resolve(handlerGetAllProjects(req, res)).catch(next);
 });
 
 app.post("/api/projects", (req, res, next) => {
