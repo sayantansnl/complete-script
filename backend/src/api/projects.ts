@@ -5,7 +5,8 @@ import {
     createNewProject, 
     getProjectById, 
     deleteProject, 
-    getAllProjectsByUserId 
+    getAllProjectsByUserId,
+    updateProject 
 } from "../db/queries/projects.js";
 import { respondWithJSON } from "../helpers/json.js";
 import { BadRequestError, NotFoundError, UserForbiddenError } from "../helpers/error.js";
@@ -67,13 +68,54 @@ export async function handlerGetProject(req: Request, res: Response) {
     respondWithJSON(res, 200, project);
 }
 
-// export async function handlerUpdateProject(req: Request, res: Response) {
-//     const { projectId } = req.params;
-//     if (typeof projectId !== "string") {
-//         throw new BadRequestError("invalid project id");
-//     }
-    
-// }
+export async function handlerUpdateProject(req: Request, res: Response) {
+    const { projectId } = req.params;
+    if (typeof projectId !== "string") {
+        throw new BadRequestError("invalid project id");
+    }
+    const token = getBearerToken(req);
+    const userID = validateJWT(token, config.jwtConfig.secret);
+
+    const project = await getProjectById(projectId);
+    if (!project) {
+        throw new NotFoundError("project not found");
+    }
+
+    if (project.userId !== userID) {
+        throw new UserForbiddenError("you're not allowed to update this project");
+    }
+
+    type reqParams = {
+        fountainText?: string,
+        outlineText?: string,
+        titlePageTitle?: string,
+        titlePageAuthor?: string,
+        titlePageBasedOn?: string,
+        titlePageContact?: string,
+        titlePageDraft?: string,
+        pageSize?: string,
+        fontPreferenceFamily?: string,
+        fontPreferenceSize?: number,
+        fontPreferenceLineSpacing?: number
+    };
+
+    const params: reqParams = req.body;
+    const updatedProject = await updateProject(
+        userID,
+        params.fountainText,
+        params.outlineText,
+        params.titlePageTitle,
+        params.titlePageAuthor,
+        params.titlePageBasedOn,
+        params.titlePageContact,
+        params.titlePageDraft,
+        params.pageSize,
+        params.fontPreferenceFamily,
+        params.fontPreferenceSize,
+        params.fontPreferenceLineSpacing,
+    );
+    respondWithJSON(res, 200, updatedProject);
+}
 
 export async function handlerGetAllProjects(req: Request, res: Response) {
     const token = getBearerToken(req);

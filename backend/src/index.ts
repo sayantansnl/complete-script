@@ -15,7 +15,8 @@ import {
     handlerCreateProject, 
     handlerDeleteProject, 
     handlerGetAllProjects, 
-    handlerGetProject 
+    handlerGetProject, 
+    handlerUpdateProject
 } from "./api/projects.js";
 
 const migrationClient = postgres(config.dbConfig.dbUrl, { max: 1 });
@@ -59,6 +60,10 @@ app.post("/api/projects", (req, res, next) => {
 
 app.get("/api/projects/:projectId", (req, res, next) => {
     Promise.resolve(handlerGetProject(req, res)).catch(next);
+});
+
+app.put("/api/projects/:projectId", (req, res, next) => {
+    Promise.resolve(handlerUpdateProject(req, res)).catch(next);
 });
 
 app.delete("/api/projects/:projectId", (req, res, next) => {
