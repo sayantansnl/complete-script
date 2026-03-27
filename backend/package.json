@@ -19,6 +19,7 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.5.0",
+    "@types/pdfkit": "^0.17.5",
     "drizzle-kit": "^0.31.10",
     "typescript": "^5.9.3",
     "vitest": "^4.1.0"
@@ -27,7 +28,9 @@
     "argon2": "^0.44.0",
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
+    "fountain-js": "^1.2.4",
     "jsonwebtoken": "^9.0.3",
+    "pdfkit": "^0.18.0",
     "postgres": "^3.4.8"
   }
 }
