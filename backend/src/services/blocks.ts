@@ -90,11 +90,11 @@ function extractDialogue(tokens: any[], start: number) {
         const t = tokens[i];
 
         if (t.type === "parenthetical") {
-        parenthetical = parseInlineStyles(t.text);
+            parenthetical = parseInlineStyles(t.text);
         } else if (t.type === "dialogue") {
-        lines.push(parseInlineStyles(t.text));
+            lines.push(parseInlineStyles(t.text));
         } else {
-        break;
+            break;
         }
 
         i++;
@@ -102,10 +102,10 @@ function extractDialogue(tokens: any[], start: number) {
 
     return {
         block: {
-        type: "dialogue" as const,
-        character,
-        parenthetical,
-        lines,
+            type: "dialogue" as const,
+            character,
+            parenthetical,
+            lines,
         },
         nextIndex: i,
     };
@@ -130,9 +130,9 @@ function extractDualDialogue(tokens: any[], start: number) {
 
     return {
         block: {
-        type: "dual_dialogue" as const,
-        left,
-        right,
+            type: "dual_dialogue" as const,
+            left,
+            right,
         },
         nextIndex: i + 1,
     };
