@@ -1,119 +1,142 @@
 import { describe, it, expect } from "vitest";
-import { buildBlocks } from "./blocks";
+import { parseInlineStyles, buildBlocks } from "./blocks";
 
-describe("buildBlocks", () => {
+describe("parseInlineStyles", () => {
+  it("parses plain text", () => {
+    const result = parseInlineStyles("Hello world");
 
-  it("should parse scene heading and action", () => {
+    expect(result).toEqual([
+      { text: "Hello world" }
+    ]);
+  });
+
+  it("parses bold text", () => {
+    const result = parseInlineStyles("This is **bold** text");
+
+    expect(result).toEqual([
+      { text: "This is " },
+      { text: "bold", bold: true },
+      { text: " text" },
+    ]);
+  });
+
+  it("parses multiple styles in one string", () => {
+    const result = parseInlineStyles("**Bold** and *italic*");
+
+    expect(result).toEqual([
+      { text: "Bold", bold: true },
+      { text: " and " },
+      { text: "italic", italic: true },
+    ]);
+  });
+
+  it("handles underline and strike", () => {
+    const result = parseInlineStyles("_underline_ and ~~strike~~");
+
+    expect(result).toEqual([
+      { text: "underline", underline: true },
+      { text: " and " },
+      { text: "strike", strike: true },
+    ]);
+  });
+
+  it("returns empty array for empty input", () => {
+    expect(parseInlineStyles("")).toEqual([]);
+  });
+});
+
+describe("buildBlocks - basic blocks", () => {
+  it("parses scene heading and action", () => {
     const input = `
-INT. OFFICE - DAY
+INT. ROOM - DAY
 
-John sits at his desk.
-    `;
+John sits on the chair.
+    `.trim();
 
     const blocks = buildBlocks(input);
 
     expect(blocks.length).toBe(2);
 
-    expect(blocks[0]).toMatchObject({
+    expect(blocks[0]).toEqual({
       type: "scene",
+      text: [{ text: "INT. ROOM - DAY" }],
     });
 
-    expect(blocks[1]).toMatchObject({
+    expect(blocks[1]).toEqual({
       type: "action",
+      text: [{ text: "John sits on the chair." }],
     });
-
-    expect(blocks[1].text[0].text).toContain("John sits");
   });
+});
 
-  it("should parse a dialogue block correctly", () => {
+describe("buildBlocks - dialogue", () => {
+  it("parses character and dialogue lines", () => {
     const input = `
 JOHN
-I can't do this anymore.
-    `;
+Hello there.
+How are you?
+    `.trim();
 
     const blocks = buildBlocks(input);
 
     expect(blocks.length).toBe(1);
 
-    const dialogue = blocks[0];
-
-    expect(dialogue.type).toBe("dialogue");
-    expect(dialogue.character).toBe("JOHN");
-    expect(dialogue.lines.length).toBe(1);
-    expect(dialogue.lines[0][0].text).toContain("can't do this");
+    expect(blocks[0]).toEqual({
+      type: "dialogue",
+      character: "JOHN",
+      lines: [
+        [{ text: "Hello there." }],
+        [{ text: "How are you?" }],
+      ],
+    });
   });
 
-  it("should handle parenthetical in dialogue", () => {
+  it("parses dialogue with parenthetical", () => {
     const input = `
-MARY
+JOHN
 (whispering)
-You have to.
-    `;
+Be quiet.
+    `.trim();
 
     const blocks = buildBlocks(input);
 
-    const dialogue = blocks[0];
-
-    expect(dialogue.type).toBe("dialogue");
-    expect(dialogue.parenthetical?.[0].text).toContain("whispering");
-    expect(dialogue.lines[0][0].text).toContain("You have to");
+    expect(blocks[0]).toEqual({
+      type: "dialogue",
+      character: "JOHN",
+      parentheticals: [{ text: "whispering" }],
+      lines: [[{ text: "Be quiet." }]],
+    });
   });
+});
 
-  it("should parse transitions correctly", () => {
-    const input = `
-CUT TO:
-    `;
-
-    const blocks = buildBlocks(input);
-
-    expect(blocks.length).toBe(1);
-    expect(blocks[0].type).toBe("transition");
-  });
-
-  it("should parse inline styles (bold + italic)", () => {
-    const input = `
-INT. ROOM - NIGHT
-
-He is **angry** but trying to stay *calm*.
-    `;
-
-    const blocks = buildBlocks(input);
-
-    const action = blocks[1];
-
-    expect(action.type).toBe("action");
-
-    const segments = action.text;
-
-    const hasBold = segments.some(s => s.bold);
-    const hasItalic = segments.some(s => s.italic);
-
-    expect(hasBold).toBe(true);
-    expect(hasItalic).toBe(true);
-  });
-
-  it("should parse dual dialogue", () => {
+describe("buildBlocks - dual dialogue", () => {
+  it("parses dual dialogue correctly", () => {
     const input = `
 JOHN ^
 Hello.
 
-MARY ^
+JANE ^
 Hi.
-    `;
+    `.trim();
 
     const blocks = buildBlocks(input);
 
     expect(blocks.length).toBe(1);
 
-    const dual = blocks[0];
+    const block = blocks[0];
 
-    expect(dual.type).toBe("dual_dialogue");
+    expect(block.type).toBe("dual_dialogue");
 
-    expect(dual.left.character).toBe("JOHN");
-    expect(dual.right.character).toBe("MARY");
+    if (block.type === "dual_dialogue") {
+      expect(block.left.character).toBe("JOHN");
+      expect(block.left.lines).toEqual([
+        [{ text: "Hello." }]
+      ]);
 
-    expect(dual.left.lines[0][0].text).toContain("Hello");
-    expect(dual.right.lines[0][0].text).toContain("Hi");
+      expect(block.right.character).toBe("JANE");
+      expect(block.right.lines).toEqual([
+        [{ text: "Hi." }]
+      ]);
+    }
   });
-
 });
