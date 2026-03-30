@@ -166,29 +166,28 @@ export function parseDialogueSide(tokens: any[], startIdx: number): { side: Dial
 }
 
 export function extractDualDialogue(tokens: any[], startIdx: number): { block: Block; nextIndex: number } {
-  // Expect tokens: dual_dialogue_begin, (left character, parentheticals, dialogues...), dual_dialogue_right,
-  // (right character, parentheticals, dialogues...), dual_dialogue_end
   let i = startIdx + 1; // skip 'dual_dialogue_begin'
 
-  // Parse left side
+  // Skip 'dialogue_begin' for left side
+  if (tokens[i]?.type === "dialogue_begin") i++;
+
   const leftResult = parseDialogueSide(tokens, i);
   i = leftResult.endIdx;
 
-  // Expect 'dual_dialogue_right'
-  if (i >= tokens.length || tokens[i].type !== "dual_dialogue_right") {
-    throw new Error("Malformed dual dialogue: missing 'dual_dialogue_right'");
-  }
-  i++; // skip right marker
+  // Skip 'dialogue_end' for left side
+  if (tokens[i]?.type === "dialogue_end") i++;
 
-  // Parse right side
+  // Skip 'dual_dialogue_end'
+  if (tokens[i]?.type === "dual_dialogue_end") i++;
+
+  // Skip 'dialogue_begin' for right side
+  if (tokens[i]?.type === "dialogue_begin") i++;
+
   const rightResult = parseDialogueSide(tokens, i);
   i = rightResult.endIdx;
 
-  // Expect 'dual_dialogue_end'
-  if (i >= tokens.length || tokens[i].type !== "dual_dialogue_end") {
-    throw new Error("Malformed dual dialogue: missing 'dual_dialogue_end'");
-  }
-  i++; // skip end marker
+  // Skip 'dialogue_end' for right side
+  if (tokens[i]?.type === "dialogue_end") i++;
 
   const block: Block = {
     type: "dual_dialogue",
