@@ -105,10 +105,14 @@ export function extractDialogue(tokens: any[], startIdx: number): { block: Block
   while (i < tokens.length) {
     const token = tokens[i];
     if (token.type === "parenthetical") {
-      parentheticals.push(...parseInlineStyles(token.text));
+      const cleaned = token.text.replace(/^\(|\)$/g, "");
+      parentheticals.push(...parseInlineStyles(cleaned));
       i++;
     } else if (token.type === "dialogue") {
-      lines.push(parseInlineStyles(token.text));
+      const dialogueLines = token.text.split("\n").filter((l: string) => l.trim() !== "");
+      for (const line of dialogueLines) {
+        lines.push(parseInlineStyles(line));
+      }
       i++;
     } else {
       // Stop when we encounter any other token type
@@ -223,7 +227,7 @@ export function buildBlocks(fountainText: string): Block[] {
     }
 
     switch (token.type) {
-      case "scene heading":
+      case "scene_heading":
         blocks.push({
           type: "scene",
           text: parseInlineStyles(token.text ?? ""),
