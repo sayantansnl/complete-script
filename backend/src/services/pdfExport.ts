@@ -2,7 +2,7 @@ import PDFDocument from "pdfkit";
 import fountain from "fountain-js";
 import { Readable } from "stream";
 
-interface PDFOptions {
+type PDFOptions = {
     fountainText: string;
     titlePageData: any;
     pageSize: "us-letter" | "a4";
