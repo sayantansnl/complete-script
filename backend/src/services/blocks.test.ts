@@ -159,3 +159,9 @@ John sits.
     })
   });
 });
+
+describe("buildBlocks - empty input", () => {
+  it("returns an empty array for an empty input", () => {
+    expect(buildBlocks("")).toEqual([]);
+  });
+});
