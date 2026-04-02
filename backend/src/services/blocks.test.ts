@@ -142,3 +142,20 @@ Hi.
     }
   });
 });
+
+describe("buildBlocks - transitions", () => {
+  it("parses transition correctly", () => {
+    const input = `
+INT. ROOM - DAY
+
+John sits.
+
+> FADE OUT:
+    `;
+    const blocks = buildBlocks(input);
+    expect(blocks[2]).toEqual({
+      type: "transition",
+      text: [{ text: "FADE OUT:" }]
+    })
+  });
+});
