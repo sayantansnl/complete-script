@@ -18,7 +18,7 @@ type DialogueBlock = {
   lines: InlineStyle[][];           // each line is an array of styled segments
 };
 
-type Block =
+export type Block =
   | { type: "scene"; text: InlineStyle[] }
   | { type: "action"; text: InlineStyle[] }
   | { type: "transition"; text: InlineStyle[] }
