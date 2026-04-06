@@ -4,7 +4,7 @@ import { Fountain } from "fountain-js";
 // Types
 // -----------------------------------------------------------------------------
 
-type InlineStyle = {
+export type InlineStyle = {
   text: string;
   bold?: boolean;
   italic?: boolean;
