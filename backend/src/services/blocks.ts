@@ -12,7 +12,7 @@ export type InlineStyle = {
   strike?: boolean;
 };
 
-type DialogueBlock = {
+export type DialogueBlock = {
   character: string;
   parentheticals?: InlineStyle[];   // array of parentheticals (may appear between lines)
   lines: InlineStyle[][];           // each line is an array of styled segments

@@ -3,6 +3,7 @@ import {
     renderSceneHeading, 
     renderAction,
     renderDialogue, 
+    renderDualDialogue,
     PDFOptions 
 } from "./pdfExport";
 import { Block } from "./blocks";
@@ -195,5 +196,35 @@ describe("render dialogues", () => {
             expect.any(Number),
             expect.objectContaining({ width: 144 })
         );
+    });
+});
+
+describe("render dual dialogues", () => {
+    it("renders both sides starting at the same Y position", () => {
+        const doc = {
+            text: vi.fn(),
+            font: vi.fn().mockReturnThis(),
+            fontSize: vi.fn().mockReturnThis(),
+            y: 72,
+            page: { height: 792 },
+        };
+
+        const block: Block = {
+            type: "dual_dialogue",
+            left: { character: "JOHN", lines: [[{ text: "Hello." }]] },
+            right: { character: "JANE", lines: [[{ text: "Hi." }]] },
+        };
+
+        renderDualDialogue(doc as any, block, defaultOptions);
+
+        const textCalls = doc.text.mock.calls;
+
+        // JOHN and JANE should both be rendered with the same Y coordinate
+        const johnCall = textCalls.find(call => call[0] === "JOHN");
+        const janeCall = textCalls.find(call => call[0] === "JANE");
+
+        expect(johnCall).toBeDefined();
+        expect(janeCall).toBeDefined();
+        expect(johnCall![2]).toBe(janeCall![2]);
     });
 });
