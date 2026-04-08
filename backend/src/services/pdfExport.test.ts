@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { 
     renderSceneHeading, 
-    renderAction, 
+    renderAction,
+    renderDialogue, 
     PDFOptions 
 } from "./pdfExport";
 import { Block } from "./blocks";
@@ -141,5 +142,58 @@ describe("render action lines", () => {
         expect(textCalls[0][3]).toMatchObject({ continued: true });  // "First "
         expect(textCalls[1][1]).toMatchObject({ continued: true });  // "second "
         expect(textCalls[2][1]).toMatchObject({ continued: false }); // "third"
+    });
+});
+
+describe("render dialogues", () => {
+    it("renders character name at correct position", () => {
+        const doc = {
+            text: vi.fn(),
+            font: vi.fn().mockReturnThis(),
+            fontSize: vi.fn().mockReturnThis(),
+            y: 72,
+            page: { height: 792 },
+        };
+
+        const block: Block = {
+            type: "dialogue",
+            character: "JOHN",
+            lines: [[{ text: "Hello there." }]],
+        };
+
+        renderDialogue(doc as any, block, defaultOptions);
+
+        expect(doc.text).toHaveBeenCalledWith(
+            "JOHN",
+            266,
+            expect.any(Number),
+            expect.objectContaining({ align: "left" })
+        );
+    });
+
+    it("renders parenthetical with parentheses", () => {
+        const doc = {
+            text: vi.fn(),
+            font: vi.fn().mockReturnThis(),
+            fontSize: vi.fn().mockReturnThis(),
+            y: 72,
+            page: { height: 792 },
+        };
+
+        const block: Block = {
+            type: "dialogue",
+            character: "JOHN",
+            parentheticals: [{ text: "whispering" }],
+            lines: [[{ text: "Be quiet." }]],
+        };
+
+        renderDialogue(doc as any, block, defaultOptions);
+
+        expect(doc.text).toHaveBeenCalledWith(
+            "(whispering)",
+            223,
+            expect.any(Number),
+            expect.objectContaining({ width: 144 })
+        );
     });
 });
