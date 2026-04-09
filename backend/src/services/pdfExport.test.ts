@@ -4,7 +4,8 @@ import {
     renderAction,
     renderDialogue, 
     renderDualDialogue,
-    PDFOptions 
+    PDFOptions, 
+    renderTransition
 } from "./pdfExport";
 import { Block } from "./blocks";
 
@@ -226,5 +227,31 @@ describe("render dual dialogues", () => {
         expect(johnCall).toBeDefined();
         expect(janeCall).toBeDefined();
         expect(johnCall![2]).toBe(janeCall![2]);
+    });
+});
+
+describe("it renders transitions", () => {
+    it("renders transitions right aligned", () => {
+        const doc = {
+            text: vi.fn(),
+            font: vi.fn().mockReturnThis(),
+            fontSize: vi.fn().mockReturnThis(),
+            y: 72,
+            page: { height: 792 }
+        };
+
+        const block: Block = {
+            type: "transition",
+            text: [{ text: "CUT TO:" }]
+        };
+
+        renderTransition(doc as any, block, defaultOptions);
+
+        expect(doc.text).toHaveBeenCalledWith(
+            "CUT TO:",
+            108,
+            expect.any(Number),
+            expect.objectContaining({ align: "right" })
+        );
     });
 });
