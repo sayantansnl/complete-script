@@ -1,12 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
-import { 
-    renderSceneHeading, 
-    renderAction,
-    renderDialogue, 
-    renderDualDialogue,
-    PDFOptions, 
-    renderTransition
-} from "./pdfExport";
+import { PDFOptions } from "./pdfOptions";
+import { renderSceneHeading } from "./renderSceneHeading";
+import { renderAction } from "./renderAction";
+import { renderDialogue } from "./renderDialogue";
+import { renderDualDialogue } from "./renderDualDialogues";
+import { renderTransition } from "./renderTransition";
 import { Block } from "./blocks";
 
 const defaultOptions: PDFOptions = {
