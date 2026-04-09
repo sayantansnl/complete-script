@@ -1,11 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
+import { Block } from "./blocks";
 import { PDFOptions } from "./pdfOptions";
 import { renderSceneHeading } from "./renderSceneHeading";
 import { renderAction } from "./renderAction";
 import { renderDialogue } from "./renderDialogue";
 import { renderDualDialogue } from "./renderDualDialogues";
 import { renderTransition } from "./renderTransition";
-import { Block } from "./blocks";
+import { renderTitlePage } from "./renderTitlePage";
 
 const defaultOptions: PDFOptions = {
   fountainText: "",
@@ -252,4 +253,96 @@ describe("it renders transitions", () => {
             expect.objectContaining({ align: "right" })
         );
     });
+});
+
+describe("renderTitlePage", () => {
+    const buildDoc = () => {
+        const doc = {
+            font: vi.fn().mockReturnThis(),
+            fontSize: vi.fn().mockReturnThis(),
+            addPage: vi.fn(),
+            y: 0,
+            page: { height: 792 },
+            text: vi.fn().mockImplementation((_text, _x, y) => {
+                if (typeof y === "number") {
+                    doc.y = y + 12; // advance y by one line height after each text call
+                }
+            }),
+        };
+        return doc;
+    };
+
+    it("renders title in upper third of the page", () => {
+        const doc = buildDoc();
+
+        renderTitlePage(doc as any, { title: "MY SCREENPLAY" }, defaultOptions);
+
+        expect(doc.text).toHaveBeenCalledWith(
+            "MY SCREENPLAY",
+            108,
+            792 / 3, // upper third
+            expect.objectContaining({ align: "center", underline: true })
+        );
+  });
+
+  it("renders author below title", () => {
+        const doc = buildDoc();
+
+        renderTitlePage(doc as any, { title: "MY SCREENPLAY", author: "John Doe" }, defaultOptions);
+
+        const textCalls = doc.text.mock.calls as [string, number, number, object][];
+
+        const writtenByCall = textCalls.find(call => call[0] === "Written by");
+        const authorCall = textCalls.find(call => call[0] === "John Doe");
+
+        expect(writtenByCall).toBeDefined();
+        expect(authorCall).toBeDefined();
+        expect(writtenByCall![2]).toBeLessThan(authorCall![2]); // "Written by" appears above author
+  });
+
+  it("renders draft at bottom left", () => {
+        const doc = buildDoc();
+
+        renderTitlePage(doc as any, { draft: "First Draft" }, defaultOptions);
+
+        const textCalls = doc.text.mock.calls as [string, number, number, object][];
+        const draftCall = textCalls.find(call => call[0] === "First Draft");
+
+        expect(draftCall).toBeDefined();
+        expect(draftCall![2]).toBe(792 - 144); // bottom of page minus two inches
+        expect(draftCall![3]).toMatchObject({ align: "left" });
+  });
+
+  it("renders contact below draft", () => {
+        const doc = buildDoc();
+
+        renderTitlePage(doc as any, { draft: "First Draft", contact: "john@example.com" }, defaultOptions);
+
+        const textCalls = doc.text.mock.calls as [string, number, number, object][];
+        const draftCall = textCalls.find(call => call[0] === "First Draft");
+        const contactCall = textCalls.find(call => call[0] === "john@example.com");
+
+        expect(draftCall).toBeDefined();
+        expect(contactCall).toBeDefined();
+        expect(draftCall![2]).toBeLessThan(contactCall![2]); // draft appears above contact
+    });
+
+    it("skips missing fields", () => {
+        const doc = buildDoc();
+
+        renderTitlePage(doc as any, { title: "MY SCREENPLAY" }, defaultOptions);
+
+        const textCalls = doc.text.mock.calls as [string, number, number, object][];
+        const writtenByCall = textCalls.find(call => call[0] === "Written by");
+
+        expect(writtenByCall).toBeUndefined(); // no author provided
+    });
+
+  it("adds a new page after the title page", () => {
+        const doc = buildDoc();
+
+        renderTitlePage(doc as any, { title: "MY SCREENPLAY" }, defaultOptions);
+
+        expect(doc.addPage).toHaveBeenCalledOnce();
+  });
 });
