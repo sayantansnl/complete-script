@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { EventEmitter } from "events";
 import { Block } from "./blocks";
 import { PDFOptions } from "./pdfOptions";
 import { renderSceneHeading } from "./renderSceneHeading";
@@ -7,6 +8,7 @@ import { renderDialogue } from "./renderDialogue";
 import { renderDualDialogue } from "./renderDualDialogues";
 import { renderTransition } from "./renderTransition";
 import { renderTitlePage } from "./renderTitlePage";
+import { renderPageNumber } from "./renderPageNumber";
 
 const defaultOptions: PDFOptions = {
   fountainText: "",
@@ -345,4 +347,29 @@ describe("renderTitlePage", () => {
 
         expect(doc.addPage).toHaveBeenCalledOnce();
   });
+});
+
+describe("render page number", () => {
+    it("skips page numbers on title and first screenplay page", () => {
+        const emitter = new EventEmitter();
+        const doc = {
+            text: vi.fn(),
+            font: vi.fn().mockReturnThis(),
+            fontSize: vi.fn().mockReturnThis(),
+            on: emitter.on.bind(emitter),
+            page: { height: 792 },
+            y: 0,
+        };
+
+        renderPageNumber(doc as any, defaultOptions);
+
+        // Simulate adding pages
+        emitter.emit("pageAdded"); // title page
+        emitter.emit("pageAdded"); // first screenplay page
+        emitter.emit("pageAdded"); // second screenplay page -- should render "2."
+
+        const textCalls = doc.text.mock.calls as [string, number, number, object][];
+        expect(textCalls.length).toBe(1); // only one page number rendered
+        expect(textCalls[0][0]).toBe("2.");
+    });
 });
