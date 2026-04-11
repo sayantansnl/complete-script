@@ -9,6 +9,7 @@ import { renderDualDialogue } from "./renderDualDialogues";
 import { renderTransition } from "./renderTransition";
 import { renderTitlePage } from "./renderTitlePage";
 import { renderPageNumber } from "./renderPageNumber";
+import { renderBlock } from "./pdfExport";
 
 const defaultOptions: PDFOptions = {
   fountainText: "",
@@ -371,5 +372,86 @@ describe("render page number", () => {
         const textCalls = doc.text.mock.calls as [string, number, number, object][];
         expect(textCalls.length).toBe(1); // only one page number rendered
         expect(textCalls[0][0]).toBe("2.");
+    });
+});
+
+describe("renderBlock", () => {
+    const buildDoc = () => ({
+        text: vi.fn(),
+        font: vi.fn().mockReturnThis(),
+        fontSize: vi.fn().mockReturnThis(),
+        addPage: vi.fn(),
+        y: 72,
+        page: { height: 792 },
+    });
+
+    it("calls renderSceneHeading for scene blocks", () => {
+        const doc = buildDoc();
+        const block: Block = {
+            type: "scene",
+            text: [{ text: "INT. ROOM - DAY" }],
+        };
+
+        renderBlock(doc as any, block, defaultOptions);
+
+        expect(doc.text).toHaveBeenCalledWith(
+            "INT. ROOM - DAY",
+            108,
+            expect.any(Number),
+            expect.objectContaining({ align: "left" })
+        );
+    });
+
+    it("calls renderTransition for transition blocks", () => {
+        const doc = buildDoc();
+        const block: Block = {
+            type: "transition",
+            text: [{ text: "CUT TO:" }],
+        };
+
+        renderBlock(doc as any, block, defaultOptions);
+
+        expect(doc.text).toHaveBeenCalledWith(
+            "CUT TO:",
+            108,
+            expect.any(Number),
+            expect.objectContaining({ align: "right" })
+        );
+    });
+
+    it("adds a new page when there is not enough space", () => {
+        const doc = buildDoc();
+        doc.y = 750; // close to the bottom
+
+        const block: Block = {
+            type: "scene",
+            text: [{ text: "INT. ROOM - DAY" }],
+        };
+
+        renderBlock(doc as any, block, defaultOptions);
+
+        expect(doc.addPage).toHaveBeenCalledOnce();
+    });
+
+    it("does not add a page when there is enough space", () => {
+        const doc = buildDoc();
+        doc.y = 72; // plenty of space
+
+        const block: Block = {
+            type: "scene",
+            text: [{ text: "INT. ROOM - DAY" }],
+        };
+
+        renderBlock(doc as any, block, defaultOptions);
+
+        expect(doc.addPage).not.toHaveBeenCalled();
+    });
+
+    it("throws on unknown block type", () => {
+        const doc = buildDoc();
+
+        expect(() => {
+            renderBlock(doc as any, { type: "unknown" } as any, defaultOptions);
+        }).toThrow("Unknown block type");
     });
 });
