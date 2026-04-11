@@ -8,6 +8,18 @@ import {
 } from "../helpers/error.js";
 import { respondWithError } from "../helpers/json.js";
 import { config } from "../config.js";
+import { getBearerToken, validateJWT,  } from "../auth.js";
+import { getProjectById } from "../db/queries/projects.js";
+import type { CompleteProject } from "../services/pdfOptions.js";
+
+declare global {
+    namespace Express {
+        interface Request {
+            project?: CompleteProject;
+            userID?: string;
+        }
+    }
+};
 
 export function middlewareLogResponse(req: Request, res: Response, next: NextFunction) {
     res.on("finish", () => {
@@ -35,4 +47,26 @@ export function middlewareHandleErrors(err: Error, _: Request, res: Response, __
     } else {
         respondWithError(res, 500, "Internal Server Error");
     }
+}
+
+export async function middlewareValidateProject(req: Request, _: Response, next: NextFunction) {
+    const { projectId } = req.params;
+    if (typeof projectId !== "string") {
+        throw new BadRequestError("invalid project id");
+    }
+    const token = getBearerToken(req);
+    const userID = validateJWT(token, config.jwtConfig.secret);
+    
+    const project = await getProjectById(projectId);
+    if (!project) {
+        throw new NotFoundError("project not found");
+    }
+    
+    if (project.userId !== userID) {
+        throw new UserForbiddenError("you're not allowed to access this project");
+    }
+
+    req.project = project;
+    req.userID = userID;
+    next();
 }

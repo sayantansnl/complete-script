@@ -5,7 +5,8 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import { 
     middlewareHandleErrors, 
     middlewareLogResponse,
-    middlewareIncrementServerHits 
+    middlewareIncrementServerHits,
+    middlewareValidateProject
 } from "./api/middleware.js";
 import { handlerMetrics, handlerReset } from "./api/metrics.js";
 import { handlerCreateUser, handlerUpdateUsers } from "./api/users.js";
@@ -58,15 +59,15 @@ app.post("/api/projects", (req, res, next) => {
     Promise.resolve(handlerCreateProject(req, res)).catch(next);
 });
 
-app.get("/api/projects/:projectId", (req, res, next) => {
+app.get("/api/projects/:projectId", middlewareValidateProject, (req, res, next) => {
     Promise.resolve(handlerGetProject(req, res)).catch(next);
 });
 
-app.put("/api/projects/:projectId", (req, res, next) => {
+app.put("/api/projects/:projectId", middlewareValidateProject, (req, res, next) => {
     Promise.resolve(handlerUpdateProject(req, res)).catch(next);
 });
 
-app.delete("/api/projects/:projectId", (req, res, next) => {
+app.delete("/api/projects/:projectId", middlewareValidateProject, (req, res, next) => {
     Promise.resolve(handlerDeleteProject(req, res)).catch(next);
 });
 

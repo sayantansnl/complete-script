@@ -89,27 +89,49 @@ Be quiet.
         });
     });
 });
-// describe("buildBlocks - dual dialogue", () => {
-//   it("parses dual dialogue correctly", () => {
-//     const input = `
-// JOHN^
-// Hello.
-// JANE^
-// Hi.
-//     `.trim();
-//     const blocks = buildBlocks(input);
-//     expect(blocks.length).toBe(1);
-//     const block = blocks[0];
-//     expect(block.type).toBe("dual_dialogue");
-//     if (block.type === "dual_dialogue") {
-//       expect(block.left.character).toBe("JOHN");
-//       expect(block.left.lines).toEqual([
-//         [{ text: "Hello." }]
-//       ]);
-//       expect(block.right.character).toBe("JANE");
-//       expect(block.right.lines).toEqual([
-//         [{ text: "Hi." }]
-//       ]);
-//     }
-//   });
-// });
+describe("buildBlocks - dual dialogue", () => {
+    it("parses dual dialogue correctly", () => {
+        const input = `
+JOHN^
+Hello.
+
+JANE^
+Hi.
+    `.trim();
+        const blocks = buildBlocks(input);
+        expect(blocks.length).toBe(1);
+        const block = blocks[0];
+        expect(block.type).toBe("dual_dialogue");
+        if (block.type === "dual_dialogue") {
+            expect(block.left.character).toBe("JOHN");
+            expect(block.left.lines).toEqual([
+                [{ text: "Hello." }]
+            ]);
+            expect(block.right.character).toBe("JANE");
+            expect(block.right.lines).toEqual([
+                [{ text: "Hi." }]
+            ]);
+        }
+    });
+});
+describe("buildBlocks - transitions", () => {
+    it("parses transition correctly", () => {
+        const input = `
+INT. ROOM - DAY
+
+John sits.
+
+> FADE OUT:
+    `;
+        const blocks = buildBlocks(input);
+        expect(blocks[2]).toEqual({
+            type: "transition",
+            text: [{ text: "FADE OUT:" }]
+        });
+    });
+});
+describe("buildBlocks - empty input", () => {
+    it("returns an empty array for an empty input", () => {
+        expect(buildBlocks("")).toEqual([]);
+    });
+});

@@ -1,6 +1,9 @@
 import { BadRequestError, UnauthorizedError, UserNotAuthenticatedError, UserForbiddenError, NotFoundError } from "../helpers/error.js";
 import { respondWithError } from "../helpers/json.js";
 import { config } from "../config.js";
+import { getBearerToken, validateJWT, } from "../auth.js";
+import { getProjectById } from "../db/queries/projects.js";
+;
 export function middlewareLogResponse(req, res, next) {
     res.on("finish", () => {
         if (res.statusCode >= 300) {
@@ -29,4 +32,22 @@ export function middlewareHandleErrors(err, _, res, __) {
     else {
         respondWithError(res, 500, "Internal Server Error");
     }
+}
+export async function middlewareValidateProject(req, _, next) {
+    const { projectId } = req.params;
+    if (typeof projectId !== "string") {
+        throw new BadRequestError("invalid project id");
+    }
+    const token = getBearerToken(req);
+    const userID = validateJWT(token, config.jwtConfig.secret);
+    const project = await getProjectById(projectId);
+    if (!project) {
+        throw new NotFoundError("project not found");
+    }
+    if (project.userId !== userID) {
+        throw new UserForbiddenError("you're not allowed to access this project");
+    }
+    req.project = project;
+    req.userID = userID;
+    next();
 }

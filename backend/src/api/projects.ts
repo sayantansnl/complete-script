@@ -2,14 +2,12 @@ import { Request, Response } from "express";
 import { getBearerToken, validateJWT } from "../auth.js";
 import { config } from "../config.js";
 import { 
-    createNewProject, 
-    getProjectById, 
+    createNewProject,  
     deleteProject, 
     getAllProjectsByUserId,
     updateProject 
 } from "../db/queries/projects.js";
 import { respondWithJSON } from "../helpers/json.js";
-import { BadRequestError, NotFoundError, UserForbiddenError } from "../helpers/error.js";
 
 export async function handlerCreateProject(req: Request, res: Response) {
     type reqParams = {
@@ -29,62 +27,15 @@ export async function handlerCreateProject(req: Request, res: Response) {
 }
 
 export async function handlerDeleteProject(req: Request, res: Response) {
-    const { projectId } = req.params;
-    if (typeof projectId !== "string") {
-        throw new BadRequestError("invalid project id");
-    }
-    const token = getBearerToken(req);
-    const userID = validateJWT(token, config.jwtConfig.secret);
-
-    const project = await getProjectById(projectId);
-    if (!project) {
-        throw new NotFoundError("project not found");
-    }
-
-    if (project.userId !== userID) {
-        throw new UserForbiddenError("you can't delete this project");
-    }
-
-    await deleteProject(projectId);
+    await deleteProject(req.project!.id);
     respondWithJSON(res, 204, null);
 }
 
 export async function handlerGetProject(req: Request, res: Response) {
-    const { projectId } = req.params;
-    if (typeof projectId !== "string") {
-        throw new BadRequestError("invalid project id");
-    }
-    const token = getBearerToken(req);
-    const userID = validateJWT(token, config.jwtConfig.secret);
-
-    const project = await getProjectById(projectId);
-    if (!project) {
-        throw new NotFoundError("project not found");
-    }
-
-    if (project.userId !== userID) {
-        throw new UserForbiddenError("you're not allowed to view this project");
-    }
-    respondWithJSON(res, 200, project);
+    respondWithJSON(res, 200, req.project!);
 }
 
 export async function handlerUpdateProject(req: Request, res: Response) {
-    const { projectId } = req.params;
-    if (typeof projectId !== "string") {
-        throw new BadRequestError("invalid project id");
-    }
-    const token = getBearerToken(req);
-    const userID = validateJWT(token, config.jwtConfig.secret);
-
-    const project = await getProjectById(projectId);
-    if (!project) {
-        throw new NotFoundError("project not found");
-    }
-
-    if (project.userId !== userID) {
-        throw new UserForbiddenError("you're not allowed to update this project");
-    }
-
     type reqParams = {
         fountainText?: string,
         outlineText?: string,
@@ -101,7 +52,7 @@ export async function handlerUpdateProject(req: Request, res: Response) {
 
     const params: reqParams = req.body;
     const updatedProject = await updateProject(
-        userID,
+        req.userID!,
         params.fountainText,
         params.outlineText,
         params.titlePageTitle,
