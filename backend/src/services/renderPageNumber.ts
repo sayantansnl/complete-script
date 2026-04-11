@@ -1,6 +1,6 @@
-import { PDFOptions } from "./pdfOptions.js";
+import { PDFDoc, PDFOptions } from "./pdfOptions.js";
 
-export function renderPageNumber(doc: PDFKit.PDFDocument, options: PDFOptions) {
+export function renderPageNumber(doc: PDFDoc, options: PDFOptions) {
     const lineHeight = options.fontPreference.size;
     const PAGE_WIDTH = options.pageSize === "us-letter" ? 612 : 595;
     const RIGHT_MARGIN = 72;

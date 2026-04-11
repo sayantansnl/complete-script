@@ -1,7 +1,7 @@
 import { Block } from "./blocks.js";
-import { PDFOptions } from "./pdfOptions.js";
+import { PDFDoc, PDFOptions } from "./pdfOptions.js";
 
-export function renderTransition(doc: PDFKit.PDFDocument, transitionBlock: Block, options: PDFOptions): void {
+export function renderTransition(doc: PDFDoc, transitionBlock: Block, options: PDFOptions): void {
   if (transitionBlock.type !== "transition") {
     throw new Error("transitions only");
   }

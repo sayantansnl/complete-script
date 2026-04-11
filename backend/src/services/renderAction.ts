@@ -1,8 +1,8 @@
 import { Block } from "./blocks.js";
-import { PDFOptions } from "./pdfOptions.js";
+import { PDFDoc, PDFOptions } from "./pdfOptions.js";
 import { renderInlineStyles } from "./renderInlineStyles.js";
 
-export function renderAction(doc: PDFKit.PDFDocument, actionBlock: Block, options: PDFOptions): void {
+export function renderAction(doc: PDFDoc, actionBlock: Block, options: PDFOptions): void {
     if (actionBlock.type !== "action") {
         throw new Error("only action lines");
     }

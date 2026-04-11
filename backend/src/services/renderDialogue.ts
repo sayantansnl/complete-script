@@ -1,8 +1,8 @@
 import { Block } from "./blocks.js";
-import { PDFOptions } from "./pdfOptions.js";
+import { PDFDoc, PDFOptions } from "./pdfOptions.js";
 import { renderInlineStyles } from "./renderInlineStyles.js";
 
-export function renderDialogue(doc: PDFKit.PDFDocument, dialogueBlock: Block, options: PDFOptions): void {
+export function renderDialogue(doc: PDFDoc, dialogueBlock: Block, options: PDFOptions): void {
   if (dialogueBlock.type !== "dialogue") {
     throw new Error("only dialogue lines");
   }

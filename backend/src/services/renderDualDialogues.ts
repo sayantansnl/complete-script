@@ -1,9 +1,9 @@
 import { Block, DialogueBlock } from "./blocks.js";
-import { PDFOptions } from "./pdfOptions.js";
+import { PDFDoc, PDFOptions } from "./pdfOptions.js";
 import { renderInlineStyles } from "./renderInlineStyles.js";
 
 function renderDualDialogueSide(
-  doc: PDFKit.PDFDocument,
+  doc: PDFDoc,
   side: DialogueBlock,
   characterX: number,
   dialogueX: number,
@@ -44,7 +44,7 @@ function renderDualDialogueSide(
   return y; // return the final Y position of this side
 }
 
-export function renderDualDialogue(doc: PDFKit.PDFDocument, dualDialogueBlock: Block, options: PDFOptions): void {
+export function renderDualDialogue(doc: PDFDoc, dualDialogueBlock: Block, options: PDFOptions): void {
   if (dualDialogueBlock.type !== "dual_dialogue") {
     throw new Error("dual dialogues only");
   }

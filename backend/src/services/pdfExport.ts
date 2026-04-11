@@ -1,19 +1,24 @@
-import PDFDocument from "pdfkit";
-import fountain from "fountain-js";
-
-import type { Block, DialogueBlock } from "./blocks.js";
-import { renderInlineStyles } from "./renderInlineStyles.js";
-import { PDFOptions, TitlePageData } from "./pdfOptions.js";
+import type { Block } from "./blocks.js";
+import { PDFDoc, PDFOptions } from "./pdfOptions.js";
 import { renderSceneHeading } from "./renderSceneHeading.js";
 import { renderAction } from "./renderAction.js";
 import { renderDialogue } from "./renderDialogue.js";
 import { renderDualDialogue } from "./renderDualDialogues.js";
 import { renderTransition } from "./renderTransition.js";
+import { renderTitlePage } from "./renderTitlePage.js";
+import { renderPageNumber } from "./renderPageNumber.js";
 
 
-// function renderScreenplay(doc: PDFKit.PDFDocument, blocks: Block[], options: PDFOptions): void {}
+export function renderScreenplay(doc: PDFDoc, blocks: Block[], options: PDFOptions): void {
+    renderPageNumber(doc, options);
+    renderTitlePage(doc, options.titlePageData, options);
 
-export function renderBlock(doc: PDFKit.PDFDocument, block: Block, options: PDFOptions): void {
+    for (const block of blocks) {
+        renderBlock(doc, block, options);
+    }
+}
+
+export function renderBlock(doc: PDFDoc, block: Block, options: PDFOptions): void {
     const lineHeight = options.fontPreference.size;
     const BOTTOM_MARGIN = 72;
 
@@ -49,10 +54,11 @@ export function renderBlock(doc: PDFKit.PDFDocument, block: Block, options: PDFO
     }
 }
 
-function ensureSpace(doc: PDFKit.PDFDocument, needed: number, bottomMargin: number): void {
+function ensureSpace(doc: PDFDoc, needed: number, bottomMargin: number): void {
     const pageHeight = doc.page.height;
 
     if (doc.y + needed > pageHeight - bottomMargin) {
         doc.addPage();
+        doc.y = 72;
     }
 }

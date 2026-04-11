@@ -1,7 +1,7 @@
 import { Block } from "./blocks.js";
-import { PDFOptions } from "./pdfOptions.js";
+import { PDFDoc, PDFOptions } from "./pdfOptions.js";
 
-export function renderSceneHeading(doc: PDFKit.PDFDocument, sceneBlock: Block, options: PDFOptions): void {
+export function renderSceneHeading(doc: PDFDoc, sceneBlock: Block, options: PDFOptions): void {
     const LEFT_MARGIN = 108;
     const ACTION_WIDTH = 432;
 

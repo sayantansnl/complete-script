@@ -1,4 +1,7 @@
 import { projects } from "../db/schema.js";
+import type PDFDocumnet from "pdfkit";
+
+export type PDFDoc = InstanceType<typeof PDFDocumnet>;
 
 export type CompleteProject = typeof projects.$inferSelect;
 export type TitlePageData = NonNullable<CompleteProject["titlePageData"]>;

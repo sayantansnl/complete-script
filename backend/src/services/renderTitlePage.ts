@@ -1,6 +1,6 @@
-import { PDFOptions, TitlePageData } from "./pdfOptions.js";
+import { PDFDoc, PDFOptions, TitlePageData } from "./pdfOptions.js";
 
-export function renderTitlePage(doc: PDFKit.PDFDocument, titlePageData: TitlePageData, options: PDFOptions): void {
+export function renderTitlePage(doc: PDFDoc, titlePageData: TitlePageData, options: PDFOptions): void {
   const lineHeight = options.fontPreference.size;
   const PAGE_WIDTH = options.pageSize === "us-letter" ? 612 : 595;
   const LEFT_MARGIN = 108;

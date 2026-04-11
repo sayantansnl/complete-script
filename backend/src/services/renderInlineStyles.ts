@@ -1,7 +1,8 @@
 import { InlineStyle } from "./blocks.js";
+import { PDFDoc } from "./pdfOptions.js";
 
 export function renderInlineStyles(
-  doc: PDFKit.PDFDocument,
+  doc: PDFDoc,
   segments: InlineStyle[],
   x: number,
   y: number,
