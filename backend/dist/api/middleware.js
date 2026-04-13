@@ -30,6 +30,8 @@ export function middlewareHandleErrors(err, _, res, __) {
         respondWithError(res, 404, err.message);
     }
     else {
+        console.error("Unhandled error:", err.message);
+        console.error("Stack:", err.stack);
         respondWithError(res, 500, "Internal Server Error");
     }
 }

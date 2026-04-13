@@ -17,7 +17,8 @@ import {
     handlerDeleteProject, 
     handlerGetAllProjects, 
     handlerGetProject, 
-    handlerUpdateProject
+    handlerUpdateProject,
+    handlerExportPDF
 } from "./api/projects.js";
 
 const migrationClient = postgres(config.dbConfig.dbUrl, { max: 1 });
@@ -69,6 +70,10 @@ app.put("/api/projects/:projectId", middlewareValidateProject, (req, res, next) 
 
 app.delete("/api/projects/:projectId", middlewareValidateProject, (req, res, next) => {
     Promise.resolve(handlerDeleteProject(req, res)).catch(next);
+});
+
+app.get("/api/projects/:projectId/export-pdf", middlewareValidateProject, (req, res, next) => {
+    Promise.resolve(handlerExportPDF(req, res)).catch(next);
 });
 
 app.use(middlewareHandleErrors);

@@ -35,7 +35,7 @@ export function renderDialogue(doc: PDFDoc, dialogueBlock: Block, options: PDFOp
   //Dialogue lines
 
   for (const line of dialogueBlock.lines) {
-    renderInlineStyles(doc, line, DIALOGUE_X, doc.y, DIALOGUE_WIDTH, lineHeight);
+    renderInlineStyles(doc, line, DIALOGUE_X, doc.y, DIALOGUE_WIDTH, lineHeight, options);
   }
 
   //one blank line after 

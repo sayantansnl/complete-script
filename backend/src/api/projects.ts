@@ -1,4 +1,7 @@
+import path from "path";
+import { fileURLToPath } from "url";
 import { Request, Response } from "express";
+import PDFDocument from "pdfkit";
 import { getBearerToken, validateJWT } from "../auth.js";
 import { config } from "../config.js";
 import { 
@@ -7,7 +10,14 @@ import {
     getAllProjectsByUserId,
     updateProject 
 } from "../db/queries/projects.js";
-import { respondWithJSON } from "../helpers/json.js";
+import { respondWithJSON, respondWithError } from "../helpers/json.js";
+import { buildBlocks } from "../services/blocks.js";
+import { renderScreenplay } from "../services/pdfExport.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const FONTS_DIR = path.join(__dirname, "../../fonts");
 
 export async function handlerCreateProject(req: Request, res: Response) {
     type reqParams = {
@@ -74,4 +84,53 @@ export async function handlerGetAllProjects(req: Request, res: Response) {
     
     const projects = await getAllProjectsByUserId(userID);
     respondWithJSON(res, 200, projects);
+}
+
+export async function handlerExportPDF(req: Request, res: Response) {
+    console.log("handlerExportPDF called for project:", req.project?.id);
+    const project = req.project!;
+
+    const blocks = buildBlocks(project.fountainText ?? "");
+    console.log("Blocks built.");
+    const doc = new PDFDocument({
+        margin: 0,
+        size: project.pageSize === "a4" ? "A4" : "LETTER",
+    });
+    console.log("PDF Document created");
+
+    if (project.fontPreference?.family === "Courier Prime") {
+        doc.registerFont("Courier Prime", path.join(FONTS_DIR, "CourierPrime-Regular.ttf"));
+        doc.registerFont("Courier Prime Bold", path.join(FONTS_DIR, "CourierPrime-Bold.ttf"));
+        doc.registerFont("Courier Prime Italic", path.join(FONTS_DIR, "CourierPrime-Italic.ttf"));
+        doc.registerFont("Courier Prime Bold Italic", path.join(FONTS_DIR, "CourierPrime-BoldItalic.ttf"));
+    }
+
+    const safeTitle = project.title.replace(/[^a-z0-9]/gi, "_");
+
+    try {
+        console.log("starting PDF render");
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `attachment; filename=${safeTitle}.pdf`);
+        doc.pipe(res);
+        renderScreenplay(doc, blocks, {
+            fountainText: project.fountainText ?? "",
+            titlePageData: project.titlePageData ?? {},
+            pageSize: (project.pageSize as "us-letter" | "a4") ?? "us-letter",
+            fontPreference: project.fontPreference ?? {
+                family: "Courier",
+                size: 12,
+                lineSpacing: 1
+            }
+        });
+        doc.end();
+        console.log("PDF render complete");
+    } catch (err) {
+        console.error("PDF render error:", err);
+        if (!res.headersSent) {
+            respondWithError(res, 500, "Failed to generate PDF");
+        } else {
+            res.end();
+        }
+        throw err;
+    }
 }

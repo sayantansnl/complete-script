@@ -124,7 +124,7 @@ export function parseDialogueSide(tokens, startIdx) {
     return { side, endIdx: i };
 }
 export function extractDualDialogue(tokens, startIdx) {
-    let i = startIdx + 1; // skip 'dual_dialogue_begin'
+    let i = startIdx + 1; // skip first 'dual_dialogue_begin'
     // Skip 'dialogue_begin' for left side
     if (tokens[i]?.type === "dialogue_begin")
         i++;
@@ -133,8 +133,8 @@ export function extractDualDialogue(tokens, startIdx) {
     // Skip 'dialogue_end' for left side
     if (tokens[i]?.type === "dialogue_end")
         i++;
-    // Skip 'dual_dialogue_end'
-    if (tokens[i]?.type === "dual_dialogue_end")
+    // Skip second 'dual_dialogue_begin'
+    if (tokens[i]?.type === "dual_dialogue_begin")
         i++;
     // Skip 'dialogue_begin' for right side
     if (tokens[i]?.type === "dialogue_begin")
@@ -144,6 +144,15 @@ export function extractDualDialogue(tokens, startIdx) {
     // Skip 'dialogue_end' for right side
     if (tokens[i]?.type === "dialogue_end")
         i++;
+    // Skip 'dual_dialogue_end'
+    if (tokens[i]?.type === "dual_dialogue_end")
+        i++;
+    // Skip trailing 'dialogue_begin'
+    if (tokens[i]?.type === "dialogue_begin")
+        i++;
+    // Parse SARAH's side
+    // Wait -- SARAH is a separate speaker outside the dual dialogue block
+    // so we stop here and let buildBlocks handle her as a regular dialogue
     const block = {
         type: "dual_dialogue",
         left: leftResult.side,

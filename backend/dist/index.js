@@ -7,7 +7,7 @@ import { handlerMetrics, handlerReset } from "./api/metrics.js";
 import { handlerCreateUser, handlerUpdateUsers } from "./api/users.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
 import { config } from "./config.js";
-import { handlerCreateProject, handlerDeleteProject, handlerGetAllProjects, handlerGetProject, handlerUpdateProject } from "./api/projects.js";
+import { handlerCreateProject, handlerDeleteProject, handlerGetAllProjects, handlerGetProject, handlerUpdateProject, handlerExportPDF } from "./api/projects.js";
 const migrationClient = postgres(config.dbConfig.dbUrl, { max: 1 });
 await migrate(drizzle(migrationClient), config.dbConfig.migration);
 const app = express();
@@ -44,6 +44,9 @@ app.put("/api/projects/:projectId", middlewareValidateProject, (req, res, next) 
 });
 app.delete("/api/projects/:projectId", middlewareValidateProject, (req, res, next) => {
     Promise.resolve(handlerDeleteProject(req, res)).catch(next);
+});
+app.get("/api/projects/:projectId/export-pdf", middlewareValidateProject, (req, res, next) => {
+    Promise.resolve(handlerExportPDF(req, res)).catch(next);
 });
 app.use(middlewareHandleErrors);
 app.listen(config.apiConfig.port, () => {

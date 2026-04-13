@@ -12,7 +12,7 @@ export function renderAction(doc: PDFDoc, actionBlock: Block, options: PDFOption
 
     doc.y += lineHeight; // one blank line before
 
-    renderInlineStyles(doc, actionBlock.text, LEFT_MARGIN, doc.y, ACTION_WIDTH, lineHeight);
+    renderInlineStyles(doc, actionBlock.text, LEFT_MARGIN, doc.y, ACTION_WIDTH, lineHeight, options);
 
     doc.y += lineHeight; // one blank line after
 }

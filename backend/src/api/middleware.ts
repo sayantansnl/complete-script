@@ -45,6 +45,8 @@ export function middlewareHandleErrors(err: Error, _: Request, res: Response, __
     } else if (err instanceof NotFoundError) {
         respondWithError(res, 404, err.message);
     } else {
+        console.error("Unhandled error:", err.message);
+        console.error("Stack:", err.stack);
         respondWithError(res, 500, "Internal Server Error");
     }
 }

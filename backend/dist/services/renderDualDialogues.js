@@ -21,7 +21,7 @@ function renderDualDialogueSide(doc, side, characterX, dialogueX, parentheticalX
     }
     // Dialogue lines
     for (const line of side.lines) {
-        renderInlineStyles(doc, line, dialogueX, y, columnWidth, lineHeight);
+        renderInlineStyles(doc, line, dialogueX, y, columnWidth, lineHeight, options);
         y = doc.y;
     }
     return y; // return the final Y position of this side
