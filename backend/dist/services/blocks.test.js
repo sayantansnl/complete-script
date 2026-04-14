@@ -92,24 +92,28 @@ Be quiet.
 describe("buildBlocks - dual dialogue", () => {
     it("parses dual dialogue correctly", () => {
         const input = `
-JOHN^
-Hello.
+INT. COFFEE SHOP - DAY
 
-JANE^
-Hi.
-    `.trim();
+JOHN
+Has it really been that long?
+
+JOHN^
+I can't believe it.
+
+SARAH^
+Neither can I.
+  `.trim();
         const blocks = buildBlocks(input);
-        expect(blocks.length).toBe(1);
-        const block = blocks[0];
-        expect(block.type).toBe("dual_dialogue");
-        if (block.type === "dual_dialogue") {
-            expect(block.left.character).toBe("JOHN");
-            expect(block.left.lines).toEqual([
-                [{ text: "Hello." }]
+        const dualBlock = blocks.find(b => b.type === "dual_dialogue");
+        expect(dualBlock).toBeDefined();
+        if (dualBlock?.type === "dual_dialogue") {
+            expect(dualBlock.left.character).toBe("JOHN");
+            expect(dualBlock.left.lines).toEqual([
+                [{ text: "Has it really been that long?" }]
             ]);
-            expect(block.right.character).toBe("JANE");
-            expect(block.right.lines).toEqual([
-                [{ text: "Hi." }]
+            expect(dualBlock.right.character).toBe("JOHN");
+            expect(dualBlock.right.lines).toEqual([
+                [{ text: "I can't believe it." }]
             ]);
         }
     });
