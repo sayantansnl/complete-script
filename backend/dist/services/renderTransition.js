@@ -10,6 +10,4 @@ export function renderTransition(doc, transitionBlock, options) {
         width: ACTION_WIDTH,
         align: "right"
     });
-    //one blank line after
-    doc.y += lineHeight;
 }

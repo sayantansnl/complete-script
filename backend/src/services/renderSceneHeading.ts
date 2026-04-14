@@ -18,5 +18,4 @@ export function renderSceneHeading(doc: PDFDoc, sceneBlock: Block, options: PDFO
         doc.y,
         { width: ACTION_WIDTH, align: "left" }
     );
-    doc.y += options.fontPreference.size;
 }

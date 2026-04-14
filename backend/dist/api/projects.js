@@ -44,7 +44,7 @@ export async function handlerExportPDF(req, res) {
     const blocks = buildBlocks(project.fountainText ?? "");
     console.log("Blocks built.");
     const doc = new PDFDocument({
-        margin: 0,
+        margin: 25,
         size: project.pageSize === "a4" ? "A4" : "LETTER",
     });
     console.log("PDF Document created");

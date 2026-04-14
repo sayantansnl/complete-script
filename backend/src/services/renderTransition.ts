@@ -19,7 +19,4 @@ export function renderTransition(doc: PDFDoc, transitionBlock: Block, options: P
       align: "right"
     }
   );
-
-  //one blank line after
-  doc.y += lineHeight;
 }

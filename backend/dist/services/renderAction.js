@@ -8,5 +8,4 @@ export function renderAction(doc, actionBlock, options) {
     const ACTION_WIDTH = 432;
     doc.y += lineHeight; // one blank line before
     renderInlineStyles(doc, actionBlock.text, LEFT_MARGIN, doc.y, ACTION_WIDTH, lineHeight, options);
-    doc.y += lineHeight; // one blank line after
 }

@@ -84,7 +84,4 @@ export function renderDualDialogue(doc: PDFDoc, dualDialogueBlock: Block, option
 
   // Advance Y past whichever column was taller
   doc.y = Math.max(leftEndY, rightEndY);
-
-  // One blank line after
-  doc.y += lineHeight;
 }

@@ -7,5 +7,4 @@ export function renderSceneHeading(doc, sceneBlock, options) {
     }
     doc.font(options.fontPreference.family).fontSize(options.fontPreference.size);
     doc.text(sceneBlock.text.map(s => s.text).join(""), LEFT_MARGIN, doc.y, { width: ACTION_WIDTH, align: "left" });
-    doc.y += options.fontPreference.size;
 }
