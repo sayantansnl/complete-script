@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import type { NewUser, NewRefreshToken } from "../db/schema.js";
+import type { NewUser } from "../db/schema.js";
 import { getUserByEmail } from "../db/queries/users.js";
 import { saveRefreshToken, getUserFromRefreshToken, revokeRefreshToken } from "../db/queries/refreshTokens.js";
 import { verifyHash, makeJWT, makeRefreshToken, getBearerToken } from "../auth.js";
