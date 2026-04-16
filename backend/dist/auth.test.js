@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { hashPassword, verifyHash, makeJWT, validateJWT, extractToken } from "./auth";
-import { UserNotAuthenticatedError, BadRequestError } from "./helpers/error";
+import { hashPassword, verifyHash, makeJWT, validateJWT, extractToken } from "./auth.js";
+import { UserNotAuthenticatedError, BadRequestError } from "./helpers/error.js";
 describe("Password hashing", () => {
     const password1 = "iAm@batman";
     const password2 = "7heDude@bides";

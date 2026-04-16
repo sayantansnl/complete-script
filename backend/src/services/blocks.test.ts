@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseInlineStyles, buildBlocks } from "./blocks";
+import { parseInlineStyles, buildBlocks } from "./blocks.js";
 
 describe("parseInlineStyles", () => {
   it("parses plain text", () => {

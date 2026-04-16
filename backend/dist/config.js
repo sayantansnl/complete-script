@@ -16,8 +16,8 @@ export const config = {
     jwtConfig: {
         secret: envOrThrow("SECRET"),
         issuer: envOrThrow("TOKEN_ISSUER"),
-        defaultDuration: 60 * 60,
-        refreshDuration: 60 * 60 * 24 * 60 * 1000
+        defaultDuration: 60 * 60, //1 hour in seconds for JWT expiration
+        refreshDuration: 30 * 24 * 60 * 60 * 1000 //30 days in milliseconds
     },
 };
 export function envOrThrow(key) {

@@ -1,13 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 import { EventEmitter } from "events";
-import { renderSceneHeading } from "./renderSceneHeading";
-import { renderAction } from "./renderAction";
-import { renderDialogue } from "./renderDialogue";
-import { renderDualDialogue } from "./renderDualDialogues";
-import { renderTransition } from "./renderTransition";
-import { renderTitlePage } from "./renderTitlePage";
-import { renderPageNumber } from "./renderPageNumber";
-import { renderBlock } from "./pdfExport";
+import { renderSceneHeading } from "./renderSceneHeading.js";
+import { renderAction } from "./renderAction.js";
+import { renderDialogue } from "./renderDialogue.js";
+import { renderDualDialogue } from "./renderDualDialogues.js";
+import { renderTransition } from "./renderTransition.js";
+import { renderTitlePage } from "./renderTitlePage.js";
+import { renderPageNumber } from "./renderPageNumber.js";
+import { renderBlock } from "./pdfExport.js";
 const defaultOptions = {
     fountainText: "",
     titlePageData: {
