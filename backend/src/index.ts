@@ -1,5 +1,6 @@
 import express from "express";
 import postgres from "postgres";
+import cors from "cors";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { 
@@ -11,7 +12,7 @@ import {
 import { handlerMetrics, handlerReset } from "./api/metrics.js";
 import { handlerCreateUser, handlerUpdateUsers } from "./api/users.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
-import { config } from "./config.js";
+import { config, envOrThrow } from "./config.js";
 import { 
     handlerCreateProject, 
     handlerDeleteProject, 
@@ -28,6 +29,13 @@ const app = express();
 
 app.use(express.json());
 app.use(middlewareLogResponse);
+
+app.use(cors({
+    origin: envOrThrow("FRONTEND_URL"),
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+}));
 
 app.get("/admin/metrics", middlewareIncrementServerHits, handlerMetrics);
 app.post("/admin/reset", handlerReset);
