@@ -39,15 +39,12 @@ export async function handlerGetAllProjects(req, res) {
     respondWithJSON(res, 200, projects);
 }
 export async function handlerExportPDF(req, res) {
-    console.log("handlerExportPDF called for project:", req.project?.id);
     const project = req.project;
     const blocks = buildBlocks(project.fountainText ?? "");
-    console.log("Blocks built.");
     const doc = new PDFDocument({
         margin: 25,
         size: project.pageSize === "a4" ? "A4" : "LETTER",
     });
-    console.log("PDF Document created");
     if (project.fontPreference?.family === "Courier Prime") {
         doc.registerFont("Courier Prime", path.join(FONTS_DIR, "CourierPrime-Regular.ttf"));
         doc.registerFont("Courier Prime Bold", path.join(FONTS_DIR, "CourierPrime-Bold.ttf"));
@@ -71,7 +68,6 @@ export async function handlerExportPDF(req, res) {
             }
         });
         doc.end();
-        console.log("PDF render complete");
     }
     catch (err) {
         console.error("PDF render error:", err);

@@ -4,22 +4,22 @@ import cors from "cors";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { 
-    middlewareHandleErrors, 
-    middlewareLogResponse,
-    middlewareIncrementServerHits,
-    middlewareValidateProject
+  middlewareHandleErrors, 
+  middlewareLogResponse,
+  middlewareIncrementServerHits,
+  middlewareValidateProject
 } from "./api/middleware.js";
 import { handlerMetrics, handlerReset } from "./api/metrics.js";
 import { handlerCreateUser, handlerUpdateUsers } from "./api/users.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
 import { config, envOrThrow } from "./config.js";
 import { 
-    handlerCreateProject, 
-    handlerDeleteProject, 
-    handlerGetAllProjects, 
-    handlerGetProject, 
-    handlerUpdateProject,
-    handlerExportPDF
+  handlerCreateProject, 
+  handlerDeleteProject, 
+  handlerGetAllProjects, 
+  handlerGetProject, 
+  handlerUpdateProject,
+  handlerExportPDF
 } from "./api/projects.js";
 
 const migrationClient = postgres(config.dbConfig.dbUrl, { max: 1 });
@@ -31,61 +31,61 @@ app.use(express.json());
 app.use(middlewareLogResponse);
 
 app.use(cors({
-    origin: envOrThrow("FRONTEND_URL"),
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
+  origin: envOrThrow("FRONTEND_URL"),
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 }));
 
 app.get("/admin/metrics", middlewareIncrementServerHits, handlerMetrics);
 app.post("/admin/reset", handlerReset);
 
 app.post("/api/users", (req, res, next) => {
-    Promise.resolve(handlerCreateUser(req, res)).catch(next);
+  Promise.resolve(handlerCreateUser(req, res)).catch(next);
 });
 
 app.put("/api/users", (req, res, next) => {
-    Promise.resolve(handlerUpdateUsers(req, res)).catch(next);
+  Promise.resolve(handlerUpdateUsers(req, res)).catch(next);
 });
 
 app.post("/api/login", (req, res, next) => {
-    Promise.resolve(handlerLogin(req, res)).catch(next);
+  Promise.resolve(handlerLogin(req, res)).catch(next);
 });
 
 app.post("/api/refresh", (req, res, next) => {
-    Promise.resolve(handlerRefresh(req, res)).catch(next);
+  Promise.resolve(handlerRefresh(req, res)).catch(next);
 });
 
 app.post("/api/revoke", (req, res, next) => {
-    Promise.resolve(handlerRevoke(req, res)).catch(next);
+  Promise.resolve(handlerRevoke(req, res)).catch(next);
 });
 
 app.get("/api/projects", (req, res, next) => {
-    Promise.resolve(handlerGetAllProjects(req, res)).catch(next);
+  Promise.resolve(handlerGetAllProjects(req, res)).catch(next);
 });
 
 app.post("/api/projects", (req, res, next) => {
-    Promise.resolve(handlerCreateProject(req, res)).catch(next);
+  Promise.resolve(handlerCreateProject(req, res)).catch(next);
 });
 
 app.get("/api/projects/:projectId", middlewareValidateProject, (req, res, next) => {
-    Promise.resolve(handlerGetProject(req, res)).catch(next);
+  Promise.resolve(handlerGetProject(req, res)).catch(next);
 });
 
 app.put("/api/projects/:projectId", middlewareValidateProject, (req, res, next) => {
-    Promise.resolve(handlerUpdateProject(req, res)).catch(next);
+  Promise.resolve(handlerUpdateProject(req, res)).catch(next);
 });
 
 app.delete("/api/projects/:projectId", middlewareValidateProject, (req, res, next) => {
-    Promise.resolve(handlerDeleteProject(req, res)).catch(next);
+  Promise.resolve(handlerDeleteProject(req, res)).catch(next);
 });
 
 app.get("/api/projects/:projectId/export-pdf", middlewareValidateProject, (req, res, next) => {
-    Promise.resolve(handlerExportPDF(req, res)).catch(next);
+  Promise.resolve(handlerExportPDF(req, res)).catch(next);
 });
 
 app.use(middlewareHandleErrors);
 
 app.listen(config.apiConfig.port, () => {
-    console.log(`Server listening on port:${config.apiConfig.port}`);
+  console.log(`Server listening on port:${config.apiConfig.port}`);
 });
