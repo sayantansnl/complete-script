@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage.js";
 import DashboardPage from "./pages/DashboardPage.js";
 import EditorPage from "./pages/EditorPage.js";
+import OutlinePage from "./pages/OutlinePage.js";
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/projects/:id" element={<EditorPage />} />
+        <Route path="/projects/:id/outline" element={<OutlinePage />} />
       </Routes>
     </BrowserRouter>
   );
