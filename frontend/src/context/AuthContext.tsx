@@ -1,8 +1,10 @@
 import { 
   createContext, 
+  useContext, 
   useState, 
   type ReactNode 
 } from "react";
+import apiClient from "../services/apiClient.js";
 
 type User = {
   id: string;
@@ -12,7 +14,7 @@ type User = {
 
 type AuthContextType = {
   user: User | null;
-  accesToken: string | null;
+  accessToken: string | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -22,11 +24,51 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const[accessToken, setAccessToken] = useState<string | null>(localStorage.getItem("accessToken"));
+  const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem("accessToken"));
 
-  const isAuthenticated = !accessToken;
+  const isAuthenticated = accessToken !== null;
 
   async function login(email: string, password: string) {
-
+    const { data } = await apiClient.post("/api/login", { email, password });
+    localStorage.setItem("accessToken", data.token);
+    localStorage.setItem("refreshToken", data.refreshToken);
+    setAccessToken(data.token);
+    setUser({
+      id: data.id,
+      email: data.email,
+      username: data.username,
+    });
   }
+
+  async function logout() {
+    console.log("logout called");
+    console.log("refreshToken:", localStorage.getItem("refreshToken"));
+    try {
+      await apiClient.post("/api/revoke", {}, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("refreshToken")}` },
+      });
+      console.log("revoke succeeded");
+    } catch (err) {
+      console.error("revoke failed:", err);
+    }
+    console.log("removing items");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    setAccessToken(null);
+    setUser(null);
+  }
+
+  return (
+    <AuthContext.Provider value={{ user, accessToken, isAuthenticated, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within AuthProvider");
+  }
+  return context;
 }
