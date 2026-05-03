@@ -41,17 +41,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function logout() {
-    console.log("logout called");
-    console.log("refreshToken:", localStorage.getItem("refreshToken"));
-    try {
-      await apiClient.post("/api/revoke", {}, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("refreshToken")}` },
-      });
-      console.log("revoke succeeded");
-    } catch (err) {
-      console.error("revoke failed:", err);
-    }
-    console.log("removing items");
+    await apiClient.post("/api/revoke", {}, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("refreshToken")}` },
+    });
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     setAccessToken(null);
