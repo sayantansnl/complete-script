@@ -23,9 +23,25 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp * 1000 < Date.now();
+  } catch {
+    return true;
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem("accessToken"));
+
+  useEffect(() => {
+    // Check token expiry on mount
+    if (accessToken && isTokenExpired(accessToken)) {
+      window.dispatchEvent(new Event("auth:logout"));
+    }
+  }, []);
 
   useEffect(() => {
     function handleLogout() {

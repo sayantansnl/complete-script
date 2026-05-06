@@ -18,6 +18,7 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
+    console.log("interceptor error status:", error.response?.status);
     if (error.response?.status === 401) {
       window.dispatchEvent(new Event("auth:logout"));
     }
