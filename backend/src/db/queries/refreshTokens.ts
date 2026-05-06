@@ -35,15 +35,10 @@ export async function getUserFromRefreshToken(token: string) {
 }
 
 export async function revokeRefreshToken(token: string) {
-  const rows = await db
+  await db
     .update(refreshTokens)
     .set({ revokedAt: new Date() })
     .where(
       eq(refreshTokens.token, token)
-    )
-    .returning();
-  
-  if (rows.length === 0) {
-    throw new Error("Unable to revoke token");
-  }
+    );
 }

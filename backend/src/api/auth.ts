@@ -70,5 +70,5 @@ export async function handlerRefresh(req: Request, res: Response) {
 export async function handlerRevoke(req: Request, res: Response) {
   const refreshToken = getBearerToken(req);
   await revokeRefreshToken(refreshToken);
-  res.status(204).send();
+  res.status(204).send(null);
 }
