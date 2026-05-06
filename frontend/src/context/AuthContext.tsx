@@ -1,6 +1,7 @@
 import { 
   createContext, 
   useContext, 
+  useEffect, 
   useState, 
   type ReactNode 
 } from "react";
@@ -25,6 +26,18 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem("accessToken"));
+
+  useEffect(() => {
+    function handleLogout() {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      setAccessToken(null);
+      setUser(null);
+    }
+
+    window.addEventListener("auth:logout", handleLogout);
+    return () => window.removeEventListener("auth:logout", handleLogout);
+  }, []);
 
   const isAuthenticated = accessToken !== null;
 
