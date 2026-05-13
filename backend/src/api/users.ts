@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { BadRequestError } from "../helpers/error.js";
 import { hashPassword, getBearerToken, validateJWT } from "../auth.js";
-import { createUser, updateUser } from "../db/queries/users.js";
+import { createUser, updateUser, getUserByID } from "../db/queries/users.js";
 import { NewUser } from "../db/schema.js";
 import { respondWithJSON } from "../helpers/json.js";
 import { config } from "../config.js";
@@ -38,6 +38,22 @@ export async function handlerCreateUser(req: Request, res: Response) {
 
   respondWithJSON(res, 201, newUserPreview);
 }
+
+export async function handlerGetCurrentUser(req: Request, res: Response) {
+  const token = getBearerToken(req);
+  const userID = validateJWT(token, config.jwtConfig.secret);
+
+  const user = await getUserByID(userID);
+  type UserPreview = Omit<NewUser, "passwordHash">;
+
+  respondWithJSON(res, 201, {
+    id: user.id,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+    username: user.username,
+    email: user.email
+  } satisfies UserPreview);
+} 
 
 export async function handlerUpdateUsers(req: Request, res: Response) {
   type reqParams = {
