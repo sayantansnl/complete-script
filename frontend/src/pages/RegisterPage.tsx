@@ -2,19 +2,7 @@ import { useState, type ChangeEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import apiClient from "../services/apiClient.js";
 import { useAuth } from "../context/AuthContext.js";
-
-function validatePassword(password: string): string | null {
-  const atLeastOneUpperCaseRegex = /[A-Z]/;
-  const atLeastOneNumberRegex = /[0-9]/;
-  const atLeastOneSpecialCharRegex = /[^a-zA-Z0-9]/;
-
-  if (password.length < 8) return "Password must be at least 8 characters.";
-  if (!atLeastOneUpperCaseRegex.test(password)) return "Password must contain at least one uppercase letter.";
-  if (!atLeastOneNumberRegex.test(password)) return "Password must contain at least one number.";
-  if (!atLeastOneSpecialCharRegex.test(password)) return "Password must contain at least one special character";
-
-  return null;
-}
+import { validatePassword } from "../services/validatePassword.js";
 
 export default function RegisterPage() {
   const navigate = useNavigate();

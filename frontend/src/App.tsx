@@ -8,6 +8,7 @@ import DashboardPage from "./pages/DashboardPage.js";
 import EditorPage from "./pages/EditorPage.js";
 import OutlinePage from "./pages/OutlinePage.js";
 import ErrorPage from "./pages/ErrorPage.js";
+import ProfilePage from "./pages/ProfilePage.js"
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,11 @@ export default function App() {
                 <DashboardPage />
               </ProtectedRoute>
             } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }/>
             <Route path="/projects/:projectId" element={
               <ProtectedRoute>
                 <EditorPage />

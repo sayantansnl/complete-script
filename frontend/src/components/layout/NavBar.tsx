@@ -28,7 +28,9 @@ export default function Navbar() {
           >
             New Project
           </button>
-          <span className="text-sm text-gray-600">{user?.username}</span>
+          <Link to="/profile" className="text-sm text-gray-600 hover:underline">
+            {user?.username}
+          </Link>
           <button
             onClick={handleLogout}
             className="text-sm text-red-600 hover:underline"
