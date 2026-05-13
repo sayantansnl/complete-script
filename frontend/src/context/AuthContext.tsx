@@ -45,6 +45,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    if (!accessToken || isTokenExpired(accessToken)) return;
+
+    apiClient.get("/api/users/me").then(({ data }) => {
+      setUser({
+        id: data.id,
+        email: data.email,
+        username: data.username,
+      });
+    }).catch(() => {
+      window.dispatchEvent(new Event("auth:logout"));
+    });
+  }, []);
+
+  useEffect(() => {
     function handleLogout() {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
