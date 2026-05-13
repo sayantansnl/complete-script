@@ -19,6 +19,7 @@ type AuthContextType = {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  updateUser: (updates: Partial<User>) => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -79,8 +80,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }
 
+  function updateUser(updates: Partial<User>) {
+    setUser((prev) => (prev ? { ...prev, ...updates } : null));
+  }
+
   return (
-    <AuthContext.Provider value={{ user, accessToken, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, accessToken, isAuthenticated, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

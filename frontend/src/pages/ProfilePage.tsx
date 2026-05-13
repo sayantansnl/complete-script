@@ -2,6 +2,7 @@ import { useState, type ChangeEvent } from "react";
 import Layout from "../components/layout/Layout.js";
 import { useUpdateProfile } from "../hooks/useUpdateProfile.js";
 import { validatePassword } from "../services/validatePassword.js";
+import { useAuth } from "../context/AuthContext.js";
 
 export default function ProfilePage() {
   const [username, setUsername] = useState("");
@@ -11,6 +12,7 @@ export default function ProfilePage() {
   const [passwordError, setPasswordError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const { mutate: updateProfile, isPending, isError } = useUpdateProfile();
+  const { updateUser } = useAuth();
 
   function handleSubmit(e: ChangeEvent) {
     e.preventDefault();
@@ -36,6 +38,10 @@ export default function ProfilePage() {
 
     updateProfile(params, {
       onSuccess: () => {
+        updateUser({
+          ...(username && { username }),
+          ...(email && { email })
+        });
         setSuccessMessage("Profile updated successfully");
         setPassword("");
         setConfirmPassword("");
