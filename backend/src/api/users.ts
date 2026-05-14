@@ -72,7 +72,7 @@ export async function handlerUpdateUsers(req: Request, res: Response) {
 
   const updatedUser = await updateUser(params.username, params.email, passwordHash, userID);
   if (!updatedUser) {
-      throw new Error("unable to update user");
+    throw new Error("unable to update user");
   }
 
   type UpdateResponse = Omit<NewUser, "passwordHash">;

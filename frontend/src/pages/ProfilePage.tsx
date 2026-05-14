@@ -5,14 +5,15 @@ import { validatePassword } from "../services/validatePassword.js";
 import { useAuth } from "../context/AuthContext.js";
 
 export default function ProfilePage() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
+  const { user, updateUser } = useAuth();
+
+  const [username, setUsername] = useState(user ? user.username : "");
+  const [email, setEmail] = useState(user ? user.email : "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const { mutate: updateProfile, isPending, isError } = useUpdateProfile();
-  const { updateUser } = useAuth();
 
   function handleSubmit(e: ChangeEvent) {
     e.preventDefault();
@@ -63,7 +64,6 @@ export default function ProfilePage() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Leave blank to keep current"
               className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
@@ -76,7 +76,6 @@ export default function ProfilePage() {
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Leave blank to keep current"
               className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
@@ -89,7 +88,7 @@ export default function ProfilePage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Leave blank to keep current"
+              placeholder="Enter new password"
               className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
