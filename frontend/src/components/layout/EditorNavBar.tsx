@@ -14,7 +14,7 @@ export default function EditorNavBar({
   onExportPDF, 
   isExporting 
 }: EditorNavbarProps) {
-  const { id } = useParams();
+  const { projectId } = useParams();
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -34,7 +34,7 @@ export default function EditorNavBar({
 
       <div className="flex items-center gap-1 bg-gray-100 rounded p-1">
         <Link 
-          to={`/projects/${id}`}
+          to={`/projects/${projectId}`}
           className={`px-3 py-1 rounded text-sm font-medium ${
             activeView === "screenplay" 
               ? "bg-white shadow text-gray-900"
@@ -44,7 +44,7 @@ export default function EditorNavBar({
           Screenplay
         </Link>
         <Link 
-          to={`/projects/${id}/outline`}
+          to={`/projects/${projectId}/outline`}
           className={`px-3 py-1 rounded text-sm font-medium ${
             activeView === "outline" 
               ? "bg-white shadow text-gray-900"

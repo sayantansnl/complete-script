@@ -36,7 +36,7 @@ export default function App() {
                 <EditorPage />
               </ProtectedRoute>
             } />
-            <Route path="/projects/:id/outline" element={
+            <Route path="/projects/:projectId/outline" element={
               <ProtectedRoute>
                 <OutlinePage />
               </ProtectedRoute>
