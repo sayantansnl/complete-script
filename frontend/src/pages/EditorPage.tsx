@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useProject } from "../hooks/useProject.js";
 import { useExportPDF } from "../hooks/useExportPDF.js";
 import EditorLayout from "../components/layout/EditorLayout.js";
+import ScreenplayEditor from "../editor/ScreenplayEditor.js";
 
 export default function EditorPage() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -23,8 +24,10 @@ export default function EditorPage() {
       onExportPDF={() => exportPDF({ projectId: project.id, projectTitle: project.title })}
       isExporting={isExporting}
     >
-      {/* Tiptap screenplay editor goes here */}
-      TiptapScreenplayEditor
+      <ScreenplayEditor
+        projectId={project.id}
+        fountainText={project.fountainText}
+      />
     </EditorLayout>
   );
 }

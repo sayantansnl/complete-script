@@ -1,1 +1,49 @@
 @import "tailwindcss";
+
+.tiptap p[data-type="scene-heading"] {
+  text-transform: uppercase;
+  margin-bottom: 1em;
+}
+
+.tiptap p[data-type="action"] {
+  margin-bottom: 1em;
+}
+
+.tiptap p[data-type="character"] {
+  text-transform: uppercase;
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
+}
+
+.tiptap p[data-type="parenthetical"] {
+  width: 35%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
+}
+
+.tiptap p[data-type="dialogue"] {
+  width: 55%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1em;
+}
+
+.tiptap p[data-type="transition"] {
+  text-transform: uppercase;
+  text-align: right;
+  margin-bottom: 1em;
+}
+
+.tiptap div[data-type="dual-dialogue"] {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1em;
+}
+
+.tiptap div[data-type="dual-dialogue-left"],
+.tiptap div[data-type="dual-dialogue-right"] {
+  flex: 1;
+}
