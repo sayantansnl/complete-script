@@ -10,11 +10,11 @@ export function tiptapToFountain(doc: JSONContent): string {
 
     switch (node.type) {
       case "sceneHeading":
-        return `.${text}`;
+        return `.${text.toUpperCase()}`;
       case "action":
         return text;
       case "character":
-        return `@${text}`;
+        return text.toUpperCase();;
       case "parenthetical":
         return text.startsWith("(") ? text : `(${text})`;
       case "dialogue":
@@ -25,7 +25,7 @@ export function tiptapToFountain(doc: JSONContent): string {
         const leftLines = left?.content?.map((n) => {
           const t = n.content?.map((c) => c.text ?? "").join("") ?? "";
           switch (n.type) {
-            case "character": return `@${t}`;
+            case "character": return t.toUpperCase();
             case "parenthetical": return t.startsWith("(") ? t : `(${t})`;
             case "dialogue": return t;
             default: return t;
@@ -35,7 +35,7 @@ export function tiptapToFountain(doc: JSONContent): string {
         const rightLines = right?.content?.map((n) => {
           const t = n.content?.map((c) => c.text ?? "").join("") ?? "";
           switch (n.type) {
-            case "character": return `@${t} ^`;
+            case "character": return `${t.toUpperCase()} ^`;
             case "parenthetical": return t.startsWith("(") ? t : `(${t})`;
             case "dialogue": return t;
             default: return t;
@@ -45,7 +45,7 @@ export function tiptapToFountain(doc: JSONContent): string {
         return [...leftLines, ...rightLines].join("\n\n");
       }
       case "transition":
-        return `> ${text}`;
+        return `> ${text.toUpperCase()}`;
       default:
         return text;
     }
