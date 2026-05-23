@@ -16,6 +16,7 @@ import {
 import { fountainToTiptap } from "../utils/fountainToTiptap.js";
 import { tiptapToFountain } from "../utils/tiptapToFountain.js";
 import { useSaveProject } from "../hooks/useSaveProject.js";
+import ScreenplayToolbar from "./ScreenplayToolbar.js";
 
 interface Props {
   projectId: string;
@@ -65,8 +66,12 @@ export default function ScreenplayEditor({ projectId, fountainText }: Props) {
   }, []);
 
   return (
-    <div className="max-w-[210mm] mx-auto py-16 px-27 bg-white shadow min-h-screen font-courier">
-      <EditorContent editor={editor} />
+    <div>
+      <ScreenplayToolbar editor={editor}/>
+      <div className="max-w-[210mm] mx-auto py-16 px-27 bg-white shadow min-h-screen font-courier">
+        <EditorContent editor={editor} />
+      </div>
     </div>
+    
   );
 }

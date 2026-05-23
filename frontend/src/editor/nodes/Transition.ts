@@ -15,7 +15,12 @@ export const Transition = Node.create({
 
   addKeyboardShortcuts() {
     return {
-      Enter: () => this.editor.commands.setNode("sceneHeading"),
+      Enter: () =>
+        this.editor
+          .chain()
+          .createParagraphNear()
+          .setNode("sceneHeading")
+          .run(),
       Tab: () => this.editor.commands.setNode("action"),
     };
   },

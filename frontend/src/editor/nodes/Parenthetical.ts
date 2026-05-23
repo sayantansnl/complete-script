@@ -15,7 +15,12 @@ export const Parenthetical = Node.create({
 
   addKeyboardShortcuts() {
     return {
-      Enter: () => this.editor.commands.setNode("dialogue"),
+      Enter: () =>
+        this.editor
+          .chain()
+          .createParagraphNear()
+          .setNode("dialogue")
+          .run(),
       Tab: () => this.editor.commands.setNode("dialogue"),
     };
   },
