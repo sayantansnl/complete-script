@@ -13,15 +13,33 @@ export const Parenthetical = Node.create({
     return ["p", { ...HTMLAttributes, "data-type": "parenthetical" }, 0];
   },
 
+  
   addKeyboardShortcuts() {
     return {
-      Enter: () =>
-        this.editor
+      Enter: ({ editor }) => {
+        const node = editor.state.selection.$head.parent;
+        if (node.type.name !== "parenthetical") return false;
+        if (node.textContent === "") return false;
+
+        const endOfNode = editor.state.selection.$to.end();
+        return editor
           .chain()
-          .createParagraphNear()
-          .setNode("dialogue")
-          .run(),
-      Tab: () => this.editor.commands.setNode("dialogue"),
+          .insertContentAt(endOfNode + 1, { type: "dialogue", content: [] })
+          .focus(endOfNode + 2)
+          .run();
+      },
+      Tab: ({ editor }) => {
+        const node = editor.state.selection.$head.parent;
+        if (node.type.name !== "parenthetical") return false;
+        if (node.textContent === "") return false;
+        
+        const endOfNode = editor.state.selection.$to.end();
+        return editor
+          .chain()
+          .insertContentAt(endOfNode + 1, { type: "action", content: [] })
+          .focus(endOfNode + 2)
+          .run();
+      },
     };
   },
 });

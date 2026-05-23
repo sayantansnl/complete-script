@@ -3,7 +3,7 @@ import { type JSONContent } from "@tiptap/react";
 function makeNode(type: string, text: string): JSONContent {
   return {
     type,
-    content: [{ type: "text", text }],
+    content: text ?  [{ type: "text", text }] : [],
   };
 }
 
@@ -12,7 +12,11 @@ export function fountainToTiptap(fountain: string): JSONContent {
     return { type: "doc", content: [] };
   }
 
-  const blocks = fountain.split(/\n\n+/);
+  const blocks = fountain
+    .split(/\n\n+/)
+    .map((b) => b.trim())
+    .filter((b) => b !== "");
+  
   const nodes: JSONContent[] = [];
   let i = 0;
 

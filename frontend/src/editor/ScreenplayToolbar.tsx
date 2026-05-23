@@ -15,10 +15,10 @@ const NODE_LABELS: Record<string, string> = {
 
 const SHORTCUTS: Record<string, { enter: string; tab: string }> = {
   sceneHeading: { enter: "Enter → Action", tab: "Tab → Action" },
-  action: { enter: "Enter → Action", tab: "Tab → Scene Heading" },
+  action: { enter: "Enter → Action", tab: "Tab → Character" },
   character: { enter: "Enter → Dialogue", tab: "Tab → Action" },
-  parenthetical: { enter: "Enter → Dialogue", tab: "Tab → Dialogue" },
-  dialogue: { enter: "Enter → Action", tab: "Tab → Character" },
+  parenthetical: { enter: "Enter → Dialogue", tab: "Tab → Action" },
+  dialogue: { enter: "Enter → Character", tab: "Tab → Action" },
   transition: { enter: "Enter → Scene Heading", tab: "Tab → Action" },
 };
 
