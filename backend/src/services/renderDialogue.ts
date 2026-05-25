@@ -8,6 +8,7 @@ export function renderDialogue(doc: PDFDoc, dialogueBlock: Block, options: PDFOp
   }
   const lineHeight = options.fontPreference.size;
   const CHARACTER_X = 266;
+  const CHARACTER_WIDTH = 120;
   const PARENTHETICAL_X = 223;
   const PARENTHETICAL_WIDTH = 144;
   const DIALOGUE_X = 180;
@@ -18,9 +19,11 @@ export function renderDialogue(doc: PDFDoc, dialogueBlock: Block, options: PDFOp
 
   doc.font(options.fontPreference.family).fontSize(lineHeight);
   doc.text(dialogueBlock.character, CHARACTER_X, doc.y, {
-    width: DIALOGUE_WIDTH,
+    width: CHARACTER_WIDTH,
     align: "left",
   });
+
+  doc.y += lineHeight;
 
   //for parentheticals if present
   if (dialogueBlock.parentheticals && dialogueBlock.parentheticals.length > 0) {
@@ -32,9 +35,12 @@ export function renderDialogue(doc: PDFDoc, dialogueBlock: Block, options: PDFOp
     });
   }
 
+  doc.y += lineHeight;
+
   //Dialogue lines
 
   for (const line of dialogueBlock.lines) {
     renderInlineStyles(doc, line, DIALOGUE_X, doc.y, DIALOGUE_WIDTH, lineHeight, options);
+    doc.y += lineHeight;
   }
 }

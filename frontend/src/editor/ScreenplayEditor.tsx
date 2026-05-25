@@ -46,6 +46,7 @@ export default function ScreenplayEditor({ projectId, fountainText }: Props) {
     content: fountainToTiptap(fountainText ?? ""),
     onUpdate({ editor }) {
       const fountain = tiptapToFountain(editor.getJSON());
+      console.log(fountain);
 
       if (autosaveTimer.current) {
         clearTimeout(autosaveTimer.current);

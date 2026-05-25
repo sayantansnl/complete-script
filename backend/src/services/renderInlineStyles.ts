@@ -11,26 +11,34 @@ export function renderInlineStyles(
   fontSize: number,
   options: PDFOptions
 ): void {
+  if (segments.length === 0) return;
+
   segments.forEach((segment, index) => {
     const isLast = index === segments.length - 1;
-
-    const font = getFontVariant(options.fontPreference.family, segment.bold, segment.italic);
+    const font = getFontVariant(
+      options.fontPreference.family,
+      segment.bold,
+      segment.italic
+    );
 
     doc.font(font).fontSize(fontSize);
 
-    // Only pass x and y on the first segment
     if (index === 0) {
       doc.text(segment.text, x, y, {
         width,
         continued: !isLast,
+        lineBreak: isLast,
       });
     } else {
       doc.text(segment.text, {
         width,
         continued: !isLast,
+        lineBreak: isLast,
       });
     }
   });
+
+  doc.x = x;
 }
 
 function getFontVariant(family: string, bold?: boolean, italic?: boolean): string {

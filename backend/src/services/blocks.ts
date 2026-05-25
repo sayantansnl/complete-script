@@ -255,7 +255,7 @@ export function buildBlocks(fountainText: string): Block[] {
       case "transition":
         blocks.push({
           type: "transition",
-          text: parseInlineStyles(token.text ?? ""),
+          text: parseInlineStyles((token.text ?? "").replace(/^>\s*/, "")),
         });
         i++;
         break;
@@ -283,3 +283,4 @@ export function buildBlocks(fountainText: string): Block[] {
 
   return blocks;
 }
+

@@ -41,7 +41,7 @@ describe("fountainToTiptap", () => {
   });
 
   it("converts a character and dialogue", () => {
-    expect(fountainToTiptap("@JOHN\n\nHello.")).toEqual({
+    expect(fountainToTiptap("JOHN\n\nHello.")).toEqual({
       type: "doc",
       content: [
         { type: "character", content: [{ type: "text", text: "JOHN" }] },
@@ -51,7 +51,7 @@ describe("fountainToTiptap", () => {
   });
 
   it("converts a character with parenthetical and dialogue", () => {
-    expect(fountainToTiptap("@JOHN\n\n(beat)\n\nHello.")).toEqual({
+    expect(fountainToTiptap("JOHN\n\n(beat)\n\nHello.")).toEqual({
       type: "doc",
       content: [
         { type: "character", content: [{ type: "text", text: "JOHN" }] },
@@ -62,7 +62,7 @@ describe("fountainToTiptap", () => {
   });
 
   it("converts a full scene block", () => {
-    expect(fountainToTiptap(".INT. OFFICE - DAY\n\nJohn walks in.\n\n@JOHN\n\nHello.")).toEqual({
+    expect(fountainToTiptap(".INT. OFFICE - DAY\n\nJohn walks in.\n\nJOHN\n\nHello.")).toEqual({
       type: "doc",
       content: [
         { type: "sceneHeading", content: [{ type: "text", text: "INT. OFFICE - DAY" }] },
@@ -74,7 +74,7 @@ describe("fountainToTiptap", () => {
   });
 
   it("converts dual dialogue", () => {
-    expect(fountainToTiptap("@JOHN\n\nHello.\n\n@JANE ^\n\nHi.")).toEqual({
+    expect(fountainToTiptap("JOHN\n\nHello.\n\nJANE ^\n\nHi.")).toEqual({
       type: "doc",
       content: [{
         type: "dualDialogue",
@@ -99,7 +99,7 @@ describe("fountainToTiptap", () => {
   });
 
   it("converts dual dialogue with parentheticals", () => {
-    expect(fountainToTiptap("@JOHN\n\n(quietly)\n\nHello.\n\n@JANE ^\n\n(beat)\n\nHi.")).toEqual({
+    expect(fountainToTiptap("JOHN\n\n(quietly)\n\nHello.\n\nJANE ^\n\n(beat)\n\nHi.")).toEqual({
       type: "doc",
       content: [{
         type: "dualDialogue",
